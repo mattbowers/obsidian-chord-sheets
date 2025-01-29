@@ -1,7 +1,7 @@
 import {SheetChord} from "../chordsUtils";
 
 export interface Token {
-	type: 'word' | 'chord' | 'whitespace' | 'marker' | 'header' | 'rhythm';
+	type: 'word' | 'chord' | 'whitespace' | 'marker' | 'header' | 'rhythm' | 'notation';
 	value: string;
 	range: [start: number, end: number];
 }
@@ -40,6 +40,9 @@ export type RhythmToken = Token & {
 export interface MarkerToken extends Token {
 	type: 'marker',
 }
+export interface NotationToken extends Token {
+	type: 'notation',
+}
 
 export interface HeaderToken extends Token {
 	type: 'header'
@@ -59,6 +62,10 @@ export function isChordToken(token: Token | null | undefined): token is ChordTok
 
 export function isRhythmToken(token: Token | null | undefined): token is RhythmToken {
 	return token?.type === 'rhythm';
+}
+
+export function isNotationToken(token: Token | null | undefined): token is NotationToken {
+	return !!token && token.type === 'notation';
 }
 
 export function isMarkerToken(token: Token | null | undefined): token is MarkerToken {

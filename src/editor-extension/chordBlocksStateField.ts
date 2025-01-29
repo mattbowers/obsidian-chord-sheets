@@ -20,7 +20,15 @@ import {ChordOverviewWidget} from "./chordOverviewWidget";
 import {ChordBlockToolsWidget} from "./chordBlockToolsWidget";
 import ChordsDB from "@tombatossals/chords-db";
 
-import {ChordToken, isChordToken, isHeaderToken, isMarkerToken, isRhythmToken, Token} from "../sheet-parsing/tokens";
+import {
+	ChordToken,
+	isChordToken,
+	isHeaderToken,
+	isMarkerToken,
+	isNotationToken,
+	isRhythmToken,
+	Token
+} from "../sheet-parsing/tokens";
 import {tokenizeLine} from "../sheet-parsing/tokenizeLine";
 
 class ParsedUntilRangeValue extends RangeValue {
@@ -636,6 +644,12 @@ function chordDecosForLine(line: Line, {
 		} else if (isMarkerToken(token)) {
 			chordDecos.push(Decoration
 				.mark({ class: "chord-sheet-line-marker", token })
+				.range(...token.range)
+			);
+
+		} else if (isNotationToken(token)) {
+			chordDecos.push(Decoration
+				.mark({ class: "chord-sheet-notation", token })
 				.range(...token.range)
 			);
 

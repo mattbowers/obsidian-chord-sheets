@@ -1,4 +1,4 @@
-import {ChordInfo, ChordToken, HeaderToken, MarkerToken, Token, TokenizedLine} from "./tokens";
+import {ChordInfo, ChordToken, HeaderToken, MarkerToken, NotationToken, Token, TokenizedLine} from "./tokens";
 import escapeStringRegexp from "escape-string-regexp";
 import {Chord} from "tonal";
 import {SheetChord} from "../chordsUtils";
@@ -61,6 +61,9 @@ export function tokenizeLine(line: string, lineIndex: number, chordLineMarker: s
 	const inlinePatterns = {
 		// line type markers at the end of the line, can be user defined, default "%t" and "%c"
 		lineMarker: new RegExp(`^(?<marker>${textLineMarkerPattern}|${chordLineMarkerPattern})\\s*$`, "d"),
+
+		// Match for @xxxx MusGlyphs notation
+		notation: /^[@][^\s]+/d,
 
 		// Inline chord notation in brackets mixed with words, optional auxiliarry test, eg:
 		// [Am]Some [Dm aux. text]lyrics
@@ -202,6 +205,14 @@ export function tokenizeLine(line: string, lineIndex: number, chordLineMarker: s
 
 						tokens.push(resultToken);
 						wordTokenCount++;
+						break;
+					}
+
+					case "notation": {
+						const notationToken: NotationToken = {
+							...baseToken, type: "notation"
+						};
+						tokens.push(notationToken);
 						break;
 					}
 

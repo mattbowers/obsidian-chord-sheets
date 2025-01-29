@@ -4,7 +4,7 @@ import tippy from "tippy.js/headless";
 import {makeChordDiagram, makeChordOverview} from "./chordDiagrams";
 import {ChordSheetsSettings} from "./chordSheetsSettings";
 
-import {ChordToken, isChordToken, isHeaderToken, isMarkerToken, isRhythmToken} from "./sheet-parsing/tokens";
+import {ChordToken, isChordToken, isHeaderToken, isMarkerToken, isRhythmToken, isNotationToken} from "./sheet-parsing/tokens";
 import {tokenizeLine} from "./sheet-parsing/tokenizeLine";
 
 export class ChordBlockPostProcessorView extends MarkdownRenderChild {
@@ -129,6 +129,11 @@ export class ChordBlockPostProcessorView extends MarkdownRenderChild {
 						cls: `chord-sheet-line-marker`,
 						text: token.value
 					});
+				} else if (isNotationToken(token)) {
+					lineDiv.createSpan({
+						cls: `chord-sheet-notation`,
+						text: token.value
+					});
 				} else if (highlightSectionHeaders && isHeaderToken(token)) {
 					lineDiv.addClass("chord-sheet-section-header");
 					const headerSpan = lineDiv.createSpan({
@@ -140,7 +145,7 @@ export class ChordBlockPostProcessorView extends MarkdownRenderChild {
 					});
 					headerSpan.createSpan({
 						cls: `chord-sheet-section-header-name cm-strong`,
-                        text: token.headerName.value
+						text: token.headerName.value
 					});
 					headerSpan.createSpan({
 						cls: `chord-sheet-section-header-bracket`,
