@@ -1,4 +1,14 @@
-import {ChordInfo, ChordToken, HeaderToken, MarkerToken, NotationToken, Token, TokenizedLine} from "./tokens";
+import {
+	ChordInfo,
+	ChordToken,
+	HeaderToken,
+	LabelToken,
+	MarkerToken,
+	NotationToken,
+	SectionToken,
+	Token,
+	TokenizedLine
+} from "./tokens";
 import escapeStringRegexp from "escape-string-regexp";
 import {Chord} from "tonal";
 import {SheetChord} from "../chordsUtils";
@@ -64,6 +74,12 @@ export function tokenizeLine(line: string, lineIndex: number, chordLineMarker: s
 
 		// Match for @xxxx MusGlyphs notation
 		notation: /^[@][^\s]+/d,
+
+		// Match for quoted label
+		label: /^(?<open>['_!$%^*_+=:])(?<text>[^\1]+)(?<close>\1)/d,
+
+		// Match for section
+		section: /^[^:]+[:]/d,
 
 		// Inline chord notation in brackets mixed with words, optional auxiliarry test, eg:
 		// [Am]Some [Dm aux. text]lyrics
@@ -213,6 +229,38 @@ export function tokenizeLine(line: string, lineIndex: number, chordLineMarker: s
 							...baseToken, type: "notation"
 						};
 						tokens.push(notationToken);
+						break;
+					}
+					case "section": {
+						const sectionToken: SectionToken = {
+							...baseToken, type: "section"
+						};
+						tokens.push(sectionToken);
+						break;
+					}
+					case "label": {
+						const {
+							open: openingQuote, text: labelText, close: closingQuote
+						} = match.groups!;
+						const {
+							open: openingQuoteRange, text: textRange, close: closingQuoteRange
+						} = match.indices!.groups!;
+
+
+						const labelToken: LabelToken = {
+							type: "label",
+							labelType: "",
+							value: matchValue,
+							range: offsetRange(matchRange, pos),
+							openingQuote: { value: openingQuote, range: openingQuoteRange },
+							labelText: {value: labelText, range: textRange},
+							closingQuote: { value: closingQuote, range: closingQuoteRange }
+						};
+						switch (openingQuote) {
+							case "'": { labelToken.labelType = "-cue";   break;}
+							case "_": { labelToken.labelType = "-patch"; break;}
+						}
+						tokens.push(labelToken);
 						break;
 					}
 

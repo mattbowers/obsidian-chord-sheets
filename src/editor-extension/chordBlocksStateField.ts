@@ -23,10 +23,10 @@ import ChordsDB from "@tombatossals/chords-db";
 import {
 	ChordToken,
 	isChordToken,
-	isHeaderToken,
+	isHeaderToken, isLabelToken,
 	isMarkerToken,
 	isNotationToken,
-	isRhythmToken,
+	isRhythmToken, isSectionToken,
 	Token
 } from "../sheet-parsing/tokens";
 import {tokenizeLine} from "../sheet-parsing/tokenizeLine";
@@ -649,10 +649,34 @@ function chordDecosForLine(line: Line, {
 
 		} else if (isNotationToken(token)) {
 			chordDecos.push(Decoration
-				.mark({ class: "chord-sheet-notation", token })
+				.mark({class: "chord-sheet-notation", token})
 				.range(...token.range)
 			);
+		} else if (isLabelToken(token)) {
+			const [labelStart, labelEnd] = token.range;
+			const [startTagStart, startTagEnd] = resolveIndex(token.openingQuote.range, token);
+			const [labelNameStart, labelNameEnd] = resolveIndex(token.labelText.range, token);
+			const [endTagStart, endTagEnd] = resolveIndex(token.closingQuote.range, token);
 
+			chordDecos.push(
+				Decoration
+					.mark({ class: "chord-sheet-label"+token.labelType })
+					.range(labelStart, labelEnd),
+				Decoration
+					.mark({ class: "chord-sheet-label-quote" })
+					.range(startTagStart, startTagEnd),
+				Decoration
+					.mark({ class: "chord-sheet-label-text" })
+					.range(labelNameStart, labelNameEnd),
+				Decoration
+					.mark({ class: "chord-sheet-label-quote" })
+					.range(endTagStart, labelEnd)
+			);
+		} else if (isSectionToken(token)) {
+			chordDecos.push(Decoration
+				.mark({ class: "chord-sheet-section", token })
+				.range(...token.range)
+			);
 		} else if (highlightSectionHeaders && isHeaderToken(token)) {
 			const [headerStart, headerEnd] = token.range;
 			const [startTagStart, startTagEnd] = resolveIndex(token.openingBracket.range, token);

@@ -4,7 +4,16 @@ import tippy from "tippy.js/headless";
 import {makeChordDiagram, makeChordOverview} from "./chordDiagrams";
 import {ChordSheetsSettings} from "./chordSheetsSettings";
 
-import {ChordToken, isChordToken, isHeaderToken, isMarkerToken, isRhythmToken, isNotationToken} from "./sheet-parsing/tokens";
+import {
+	ChordToken,
+	isChordToken,
+	isHeaderToken,
+	isMarkerToken,
+	isRhythmToken,
+	isNotationToken,
+	isLabelToken,
+	isSectionToken
+} from "./sheet-parsing/tokens";
 import {tokenizeLine} from "./sheet-parsing/tokenizeLine";
 
 export class ChordBlockPostProcessorView extends MarkdownRenderChild {
@@ -134,6 +143,28 @@ export class ChordBlockPostProcessorView extends MarkdownRenderChild {
 						cls: `chord-sheet-notation`,
 						text: token.value
 					});
+				} else if (isSectionToken(token)) {
+					lineDiv.createSpan({
+						cls: `chord-sheet-section`,
+						text: token.value
+					});
+				} else if (isLabelToken(token)) {
+					const labelSpan = lineDiv.createSpan({
+						cls: "chord-sheet-label"+token.labelType,
+					});
+					labelSpan.createSpan({
+						cls: `chord-sheet-label-quote`,
+						text: token.openingQuote.value
+					});
+					labelSpan.createSpan({
+						cls: `chord-sheet-label-text`,
+						text: token.labelText.value
+					});
+					labelSpan.createSpan({
+						cls: `chord-sheet-label-quote`,
+						text: token.closingQuote.value
+					});
+
 				} else if (highlightSectionHeaders && isHeaderToken(token)) {
 					lineDiv.addClass("chord-sheet-section-header");
 					const headerSpan = lineDiv.createSpan({

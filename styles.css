@@ -861,6 +861,36 @@ svg.enharmonic-toggle {
 	.E {color: palevioletred}
 }
 
+/* Label token */
+
+span.chord-sheet-label-cue {
+	font-family: var(--font-text);
+	font-style: italic;
+	color: var(--text-muted);
+}
+
+span.chord-sheet-label-patch {
+	font-family: var(--font-text);
+	color: coral;
+}
+
+/* Hide label quotes for everything in reading view...*/
+.markdown-reading-view span.chord-sheet-label-quote {
+	visibility: collapse;
+	display: none;
+}
+/* ...except cues */
+.markdown-reading-view span.chord-sheet-label-cue span.chord-sheet-label-quote {
+	visibility: visible;
+	display: inline;
+}
+
+/* Section token */
+
+span.chord-sheet-section {
+	font-family: var(--font-text);
+	font-weight: bold;
+}
 /* Notation font support */
 .markdown-reading-view span.chord-sheet-notation,
 .markdown-source-view.mod-cm6.is-live-preview span.chord-sheet-notation {
