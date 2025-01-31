@@ -78,6 +78,8 @@ export function tokenizeLine(line: string, lineIndex: number, chordLineMarker: s
 		// Match for quoted label
 		label: /^(?<open>['_!$%^*_+=:])(?<text>[^\1]+)(?<close>\1)/d,
 
+		labelSmartQuote: /^(?<open>‘)(?<text>[^’]+)(?<close>’)/d,
+
 		// Match for section
 		section: /^[^:]+[:]/d,
 
@@ -238,6 +240,7 @@ export function tokenizeLine(line: string, lineIndex: number, chordLineMarker: s
 						tokens.push(sectionToken);
 						break;
 					}
+					case "labelSmartQuote":
 					case "label": {
 						const {
 							open: openingQuote, text: labelText, close: closingQuote
@@ -257,7 +260,9 @@ export function tokenizeLine(line: string, lineIndex: number, chordLineMarker: s
 							closingQuote: { value: closingQuote, range: closingQuoteRange }
 						};
 						switch (openingQuote) {
-							case "'": { labelToken.labelType = "-cue";   break;}
+							case "'":
+							case "‘":
+							{ labelToken.labelType = "-cue";   break;}
 							case "_": { labelToken.labelType = "-patch"; break;}
 						}
 						tokens.push(labelToken);
