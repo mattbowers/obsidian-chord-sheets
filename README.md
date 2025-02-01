@@ -1,3 +1,8 @@
+A fork of [Obsidian Chord Sheets](https://github.com/olvidalo/obsidian-chord-sheets) plugin to experiment with extensions including:
+
+- Support for inserting musical notation using MusGlyphs font
+- Additional markdown for labels, cues, directions
+
 # Obsidian Chord Sheets
 
 Render and work with chord sheets (**chords over lyrics** or **inline chords** in brackets) in your vault. This plugin brings
