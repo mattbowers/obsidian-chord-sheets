@@ -524,6 +524,10 @@ code.chord-sheet-chord-block-preview {
 	color: var(--section-header-bracket-color, var(--text-faint));
 	font-weight: var(--section-header-tag-font-weight, inherit);
 }
+.markdown-reading-view .chord-sheet-section-header-bracket {
+ 	display: none;
+	visibility: collapse;
+}
 
 .chord-sheet-uniform-header-style .chord-sheet-section-header-bracket{
 	color: var(--section-header-title-color, var(--bold-color));
@@ -865,6 +869,60 @@ svg.enharmonic-toggle {
 	.E {color: palevioletred}
 }
 
+/* Property tokens */
+/* Hide property tags in reading view...*/
+.markdown-reading-view span.chord-sheet-property-tag {
+	visibility: collapse;
+	display: none;
+}
+/* Hack to reduce space consumed by key and tempo property divs */
+.markdown-reading-view div.chord-sheet-property-key,
+.markdown-reading-view div.chord-sheet-property-tempo {
+	margin: -12px;
+}
+/* Title */
+span.chord-sheet-property-title {
+    font-size: 110%;
+	font-weight: bold;
+	color: var(--text-muted);
+	font-family: var(--font-text);
+}
+/* Artist */
+span.chord-sheet-property-artist {
+	color: var(--text-muted);
+	font-family: var(--font-text);
+	font-size: 90%;
+}
+/* Key */
+span.chord-sheet-property-key {
+	color: cornflowerblue;
+	font-family: var(--font-text);
+	font-weight: bold;
+}
+.markdown-reading-view span.chord-sheet-property-key {
+	position: absolute;
+	top: 12px;
+	right: 20%;
+
+	::before {
+		content: "Key of "
+	}
+}
+
+/* Tempo */
+span.chord-sheet-property-tempo {
+	color: darkgreen;
+	font-family: var(--font-text);
+	font-weight: bold;
+}
+.markdown-reading-view span.chord-sheet-property-tempo {
+	position: absolute;
+	top: 12px; right: 16px;
+
+	::after {
+		content: " bpm"
+	}
+}
 /* Label token */
 
 span.chord-sheet-label-cue {

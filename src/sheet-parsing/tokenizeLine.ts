@@ -4,7 +4,7 @@ import {
 	HeaderToken,
 	LabelToken,
 	MarkerToken,
-	NotationToken,
+	NotationToken, PropertyToken,
 	SectionToken,
 	Token,
 	TokenizedLine
@@ -61,7 +61,6 @@ export function tokenizeLine(line: string, lineIndex: number, chordLineMarker: s
 		return {tokens, isChordLine: false};
 	}
 
-
 	const chordLineMarkerPattern = escapeStringRegexp(chordLineMarker);
 	const textLineMarkerPattern = escapeStringRegexp(textLineMarker);
 
@@ -79,6 +78,9 @@ export function tokenizeLine(line: string, lineIndex: number, chordLineMarker: s
 		label: /^(?<open>['_!$%^*_+=:])(?<text>[^\1]+)(?<close>\1)/d,
 
 		labelSmartQuote: /^(?<open>‘)(?<text>[^’]+)(?<close>’)/d,
+
+		// Match for property
+		property: /^(?<tag>(?<name>(Title|Artist|Tempo|Key|Time)):\s*)(?<value>.*)$/d,
 
 		// Match for section
 		section: /^[^:]+[:]/d,
@@ -268,7 +270,25 @@ export function tokenizeLine(line: string, lineIndex: number, chordLineMarker: s
 						tokens.push(labelToken);
 						break;
 					}
+					case "property": {
+						const {
+							tag: tag, name: name, value: value
+						} = match.groups!;
+						const {
+							tag: tagRange, value: valueRange
+						} = match.indices!.groups!;
 
+						const propertyToken: PropertyToken = {
+							type: "property",
+							value: matchValue,
+							range: offsetRange(matchRange, pos),
+							propertyTag: { value: tag, range: tagRange },
+							propertyValue: { value: value, range: valueRange},
+							propertyName: name.toLowerCase()
+						};
+						tokens.push(propertyToken);
+						break;
+					}
 					case "whitespace": {
 						tokens.push({...baseToken, type: "whitespace"});
 						break;
