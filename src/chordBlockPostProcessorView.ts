@@ -1,4 +1,4 @@
-import {MarkdownRenderChild} from "obsidian";
+import {MarkdownRenderChild, TFile} from "obsidian";
 import {Instrument, uniqueChordTokens} from "./chordsUtils";
 import tippy from "tippy.js/headless";
 import {makeChordDiagram, makeChordOverview} from "./chordDiagrams";
@@ -12,9 +12,10 @@ import {
 	isRhythmToken,
 	isNotationToken,
 	isLabelToken,
-	isSectionToken, isPropertyToken
+	isSectionToken, isPropertyToken, isEmbedToken
 } from "./sheet-parsing/tokens";
 import {tokenizeLine} from "./sheet-parsing/tokenizeLine";
+import ChordSheetsPlugin from "./main";
 
 export class ChordBlockPostProcessorView extends MarkdownRenderChild {
 	source: string;
@@ -22,7 +23,8 @@ export class ChordBlockPostProcessorView extends MarkdownRenderChild {
 	constructor(
 		containerEl: HTMLElement,
 		private instrument: Instrument,
-		private settings: ChordSheetsSettings
+		private settings: ChordSheetsSettings,
+		private plugin: ChordSheetsPlugin
 	) {
 		super(containerEl);
 	}
@@ -161,9 +163,9 @@ export class ChordBlockPostProcessorView extends MarkdownRenderChild {
 						cls: `chord-sheet-property-value`,
 						text: token.propertyValue.value
 					});
-				}  else if (isLabelToken(token)) {
+				} else if (isLabelToken(token)) {
 					const labelSpan = lineDiv.createSpan({
-						cls: "chord-sheet-label"+token.labelType,
+						cls: "chord-sheet-label" + token.labelType,
 					});
 					labelSpan.createSpan({
 						cls: `chord-sheet-label-quote`,
@@ -177,6 +179,20 @@ export class ChordBlockPostProcessorView extends MarkdownRenderChild {
 						cls: `chord-sheet-label-quote`,
 						text: token.closingQuote.value
 					});
+
+				} else if (isEmbedToken(token)) {
+					const embedSpan = lineDiv.createSpan({
+						cls: "chord-sheet-embed",
+					});
+
+					// This works, but is it efficient to call everytime? Other plugins seem to create a cache
+					const tfile = this.plugin.app.vault.getFileByPath(this.plugin.app.vault.config.attachmentFolderPath + "/" + token.src);
+					if (tfile instanceof TFile) {
+						const src = this.plugin.app.vault.getResourcePath(tfile);
+						const img = embedSpan.createEl("img", {attr: {src: src}});
+						if (token.width > 0) { img.width = token.width; }
+						if (token.height > 0) { img.height = token.height; }
+					}
 
 				} else if (highlightSectionHeaders && isHeaderToken(token)) {
 					lineDiv.addClass("chord-sheet-section-header");

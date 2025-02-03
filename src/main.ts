@@ -51,7 +51,8 @@ export default class ChordSheetsPlugin extends Plugin implements IChordSheetsPlu
 					context.addChild(new ChordBlockPostProcessorView(
 						codeblock.parentElement!,
 						instrument as Instrument,
-						this.settings
+						this.settings,
+						this
 					));
 				}
 			}

@@ -1,6 +1,6 @@
 import {
 	ChordInfo,
-	ChordToken,
+	ChordToken, EmbedToken,
 	HeaderToken,
 	LabelToken,
 	MarkerToken,
@@ -78,6 +78,9 @@ export function tokenizeLine(line: string, lineIndex: number, chordLineMarker: s
 		label: /^(?<open>['_!$%^*_+=:])(?<text>[^\1]+)(?<close>\1)/d,
 
 		labelSmartQuote: /^(?<open>‘)(?<text>[^’]+)(?<close>’)/d,
+
+		// Match for embed
+		embed:  /^!\[\[(?<src>[^\[|]+)(?:(?:\|(?<width>\d+))(?:x(?<height>\d+))?)?]]/d,
 
 		// Match for property
 		property: /^(?<tag>(?<name>(Title|Artist|Tempo|Key|Time)):\s*)(?<value>.*)$/d,
@@ -251,7 +254,6 @@ export function tokenizeLine(line: string, lineIndex: number, chordLineMarker: s
 							open: openingQuoteRange, text: textRange, close: closingQuoteRange
 						} = match.indices!.groups!;
 
-
 						const labelToken: LabelToken = {
 							type: "label",
 							labelType: "",
@@ -268,6 +270,23 @@ export function tokenizeLine(line: string, lineIndex: number, chordLineMarker: s
 							case "_": { labelToken.labelType = "-patch"; break;}
 						}
 						tokens.push(labelToken);
+						break;
+					}
+					case "embed": {
+						const {
+							src: src, width: width, height: height
+						} = match.groups!;
+
+						const embedToken: EmbedToken = {
+							type: "embed",
+							value: matchValue,
+							range: offsetRange(matchRange, pos),
+							src: src,
+							width: Number(width),
+							height: Number(height)
+						};
+
+						tokens.push(embedToken);
 						break;
 					}
 					case "property": {
