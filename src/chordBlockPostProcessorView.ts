@@ -74,8 +74,8 @@ export class ChordBlockPostProcessorView extends MarkdownRenderChild {
 						cls: "chord-sheet-chord",
 					});
 
-
 					if (token.inlineChord) {
+						lineDiv.addClass("chord-sheet-inline");
 						chordSpan.createSpan({
 							cls: `chord-sheet-inline-chord-bracket`,
 							text: token.inlineChord.openingBracket.value
@@ -86,6 +86,7 @@ export class ChordBlockPostProcessorView extends MarkdownRenderChild {
 						cls: `chord-sheet-chord-name${highlightChords ? " chord-sheet-chord-highlight" : ""}`,
 						text: token.chordSymbol.value
 					});
+
 
 					if (token.userDefinedChord) {
 						const userDefinedChord = token.userDefinedChord;
@@ -124,6 +125,12 @@ export class ChordBlockPostProcessorView extends MarkdownRenderChild {
 							cls: `chord-sheet-inline-chord-bracket`,
 							text: token.inlineChord.closingBracket.value
 						});
+
+						chordSpan.createSpan({
+							cls: `chord-sheet-inline-chord-trailing-text`,
+							text: token.inlineChord.trailingText ? token.inlineChord.trailingText.value : " "
+						});
+
 					}
 
 
