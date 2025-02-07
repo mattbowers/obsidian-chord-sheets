@@ -16,7 +16,7 @@ settings:
         type: variable-themed-color
         format: hex
         default-light: '#'
-        default-dark: '#FFCC00'
+        default-dark: '#'
     -
         id: chord-highlight-font-weight
         title: Chord symbol font weight
@@ -282,7 +282,7 @@ settings:
             - bolder
             - inherit
 
-	## RYHTM MARKERS
+	## RHYTHM MARKERS
     -
         id: rhythm-markers
         title: Rhythm markers
@@ -297,7 +297,7 @@ settings:
         type: variable-themed-color
         format: hex
         default-light: '#'
-        default-dark: '#FFFFFF'
+        default-dark: '#'
     -
         id: rhythm-marker-font-weight
         title: Inline chord auxiliary text font weight
@@ -454,6 +454,7 @@ settings:
             - lighter
             - bolder
             - inherit
+
 */
 
 .chord-sheet-chord-line .chord-sheet-chord {
@@ -490,10 +491,6 @@ settings:
 	font-weight: var(--line-marker-font-weight, inherit);
 }
 
-.markdown-rendered pre {
-	background-color: black;
-}
-
 code.chord-sheet-chord-block-preview {
 	font-size: unset;
 
@@ -523,10 +520,6 @@ code.chord-sheet-chord-block-preview {
 .chord-sheet-section-header-bracket {
 	color: var(--section-header-bracket-color, var(--text-faint));
 	font-weight: var(--section-header-tag-font-weight, inherit);
-}
-.markdown-reading-view .chord-sheet-section-header-bracket {
- 	display: none;
-	visibility: collapse;
 }
 
 .chord-sheet-uniform-header-style .chord-sheet-section-header-bracket{
@@ -870,71 +863,28 @@ svg.enharmonic-toggle {
 }
 
 /* Property tokens */
-/* Hide property tags in reading view...*/
+/* Hide property tags in reading view*/
 .markdown-reading-view span.chord-sheet-property-tag {
 	visibility: collapse;
 	display: none;
 }
-/* Hack to reduce space consumed by key and tempo property divs */
-.markdown-reading-view div.chord-sheet-property-key,
-.markdown-reading-view div.chord-sheet-property-tempo {
-	margin: -12px;
+span.chord-sheet-property-value {
+	font-family: var(--font-text);
 }
 /* Title */
 span.chord-sheet-property-title {
-    font-size: 110%;
-	font-weight: bold;
 	color: var(--text-muted);
-	font-family: var(--font-text);
+	font-size: var(--h2-size);
+	font-weight: bold;
 }
 /* Artist */
 span.chord-sheet-property-artist {
 	color: var(--text-muted);
-	font-family: var(--font-text);
-	font-size: 90%;
-}
-/* Key */
-span.chord-sheet-property-key {
-	color: cornflowerblue;
-	font-family: var(--font-text);
-	font-weight: bold;
-}
-.markdown-reading-view span.chord-sheet-property-key {
-	position: absolute;
-	top: 12px;
-	right: 20%;
-
-	::before {
-		content: "Key of "
-	}
+	font-size: var(--font-smaller);
+	font-weight: normal;
 }
 
-/* Tempo */
-span.chord-sheet-property-tempo {
-	color: darkgreen;
-	font-family: var(--font-text);
-	font-weight: bold;
-}
-.markdown-reading-view span.chord-sheet-property-tempo {
-	position: absolute;
-	top: 12px; right: 16px;
-
-	::after {
-		content: " bpm"
-	}
-}
 /* Label token */
-
-span.chord-sheet-label-cue {
-	font-family: var(--font-text);
-	font-style: italic;
-	color: var(--text-muted);
-}
-
-span.chord-sheet-label-patch {
-	font-family: var(--font-text);
-	color: #FF6633;
-}
 
 /* Hide label quotes for everything in reading view...*/
 .markdown-reading-view span.chord-sheet-label-quote {
@@ -948,24 +898,24 @@ span.chord-sheet-label-patch {
 }
 
 /* Section token */
-
 span.chord-sheet-section {
 	font-family: var(--font-text);
-	font-weight: bold;
+	color: var(--section-header-title-color, var(--bold-color));
+	font-weight: var(--section-header-title-font-weight, bolder);
 }
+
 /* Notation font support */
 .markdown-reading-view span.chord-sheet-notation,
 .markdown-source-view.mod-cm6.is-live-preview span.chord-sheet-notation {
 	font-family: "MusGlyphs-Text", sans-serif !important;
 	font-feature-settings: "liga" 1, "clig" 1, "dlig" 1, "hlig" 1;
 	font-variant-ligatures: common-ligatures discretionary-ligatures historical-ligatures contextual;
-	line-height: 1.5; /* Adjust this as needed */
+	line-height: 1.5;
 	display: inline-block;
 	width: .6em;
 	font-weight: lighter;
 	font-size: 90%;
 }
-
 
 @font-face {
 	font-family: "MusGlyphs-Text";
