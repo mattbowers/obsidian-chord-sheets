@@ -79,6 +79,9 @@ export function tokenizeLine(line: string, lineIndex: number, chordLineMarker: s
 
 		labelSmartQuote: /^(?<open>‘)(?<text>[^’]+)(?<close>’)/d,
 
+		labelChordProComment: /^(?<open>\{comment: )(?<text>[^}]+)(?<close>})/d,
+
+
 		// Match for embed
 		embed:  /^!\[\[(?<src>[^\[|]+)(?:(?:\|(?<width>\d+))(?:x(?<height>\d+))?)?]]/d,
 
@@ -173,6 +176,9 @@ export function tokenizeLine(line: string, lineIndex: number, chordLineMarker: s
 								}
 							};
 							tokens.push(chordToken);
+							if (trailingText) {
+								wordTokenCount++;
+							}
 						} else {
 							// does not look like a chord, treat as word
 							tokens.push({type: "word", ...baseToken});
@@ -247,6 +253,7 @@ export function tokenizeLine(line: string, lineIndex: number, chordLineMarker: s
 						break;
 					}
 					case "labelSmartQuote":
+					case "labelChordProComment":
 					case "label": {
 						const {
 							open: openingQuote, text: labelText, close: closingQuote
@@ -269,6 +276,7 @@ export function tokenizeLine(line: string, lineIndex: number, chordLineMarker: s
 							case "‘":
 							{ labelToken.labelType = "-cue";   break;}
 							case "_": { labelToken.labelType = "-patch"; break;}
+							case "{comment: ": labelToken.labelType = "-chordpro-comment"; break;
 						}
 						tokens.push(labelToken);
 						break;
