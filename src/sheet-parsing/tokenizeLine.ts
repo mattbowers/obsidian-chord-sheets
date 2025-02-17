@@ -86,7 +86,7 @@ export function tokenizeLine(line: string, lineIndex: number, chordLineMarker: s
 		embed:  /^!\[\[(?<src>[^\[|]+)(?:(?:\|(?<width>\d+))(?:x(?<height>\d+))?)?]]/d,
 
 		// Match for property
-		property: /^(?<tag>(?<name>(Title|Artist|Tempo|Key|Time)):\s*)(?<value>.*)$/d,
+		property: /^(?<tag>(?<name>(Title|Artist|Tempo|Key|Time|Patch)):\s*)(?<value>.*)$/d,
 
 		// Match for section
 		section: /^[^:]+[:]/d,
