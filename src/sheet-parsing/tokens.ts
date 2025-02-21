@@ -1,7 +1,7 @@
 import {SheetChord} from "../chordsUtils";
 
 export interface Token {
-	type: 'word' | 'chord' | 'whitespace' | 'marker' | 'header' | 'rhythm' | 'notation' | 'label' | 'section' | 'property' | 'embed' ;
+	type: 'word' | 'chord' | 'whitespace' | 'marker' | 'header' | 'rhythm' | 'notation' | 'label' | 'section' | 'embed' ;
 	value: string;
 	range: [start: number, end: number];
 }
@@ -56,12 +56,7 @@ export interface EmbedToken extends Token {
 	width: number
 	height: number
 }
-export interface PropertyToken extends Token {
-	type: 'property'
-	propertyTag: SubToken
-	propertyName: string
-	propertyValue: SubToken
-}
+
 export interface SectionToken extends Token {
 	type: 'section',
 }
@@ -94,9 +89,6 @@ export function isLabelToken(token: Token | null | undefined): token is LabelTok
 }
 export function isSectionToken(token: Token | null | undefined): token is SectionToken {
 	return !!token && token.type === 'section';
-}
-export function isPropertyToken(token: Token | null | undefined): token is PropertyToken {
-	return !!token && token.type === 'property';
 }
 export function isEmbedToken(token: Token | null | undefined): token is EmbedToken {
 	return !!token && token.type === 'embed';

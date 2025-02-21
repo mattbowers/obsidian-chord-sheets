@@ -12,7 +12,7 @@ import {
 	isRhythmToken,
 	isNotationToken,
 	isLabelToken,
-	isSectionToken, isPropertyToken, isEmbedToken
+	isSectionToken, isEmbedToken
 } from "./sheet-parsing/tokens";
 import {tokenizeLine} from "./sheet-parsing/tokenizeLine";
 import ChordSheetsPlugin from "./main";
@@ -184,19 +184,6 @@ export class ChordBlockPostProcessorView extends MarkdownRenderChild {
 					lineDiv.createSpan({
 						cls: `chord-sheet-section`,
 						text: token.value
-					});
-				} else if (isPropertyToken(token)) {
-					lineDiv.addClass("chord-sheet-property-"+token.propertyName);
-					const propertySpan = lineDiv.createSpan({
-						cls: "chord-sheet-property-"+token.propertyName
-					});
-					propertySpan.createSpan({
-						cls: `chord-sheet-property-tag`,
-						text: token.propertyTag.value
-					});
-					propertySpan.createSpan({
-						cls: `chord-sheet-property-value`,
-						text: token.propertyValue.value
 					});
 				} else if (isLabelToken(token)) {
 					const labelSpan = lineDiv.createSpan({

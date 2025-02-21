@@ -899,28 +899,6 @@ svg.enharmonic-toggle {
 	display: none;
 }
 
-/* Property tokens */
-/* Hide property tags in reading view*/
-.markdown-reading-view span.chord-sheet-property-tag {
-	visibility: collapse;
-	display: none;
-}
-span.chord-sheet-property-value {
-	font-family: var(--font-text);
-}
-/* Title */
-span.chord-sheet-property-title {
-	color: var(--text-muted);
-	font-size: var(--h2-size);
-	font-weight: bold;
-}
-/* Artist */
-span.chord-sheet-property-artist {
-	color: var(--text-muted);
-	font-size: var(--font-smaller);
-	font-weight: normal;
-}
-
 /* Label token */
 
 /* Hide label quotes for everything in reading view...*/

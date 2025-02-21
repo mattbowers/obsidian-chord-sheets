@@ -25,7 +25,7 @@ import {
 	isChordToken,
 	isHeaderToken, isLabelToken,
 	isMarkerToken,
-	isNotationToken, isPropertyToken,
+	isNotationToken,
 	isRhythmToken, isSectionToken,
 	Token
 } from "../sheet-parsing/tokens";
@@ -671,22 +671,6 @@ function chordDecosForLine(line: Line, {
 				Decoration
 					.mark({ class: "chord-sheet-label-quote" })
 					.range(endTagStart, labelEnd)
-			);
-		} else if (isPropertyToken(token)) {
-			const [propStart, propEnd] = token.range;
-			const [tagStart, tagEnd] = resolveIndex(token.propertyTag.range, token);
-			const [valueStart, valueEnd] = resolveIndex(token.propertyValue.range, token);
-
-			chordDecos.push(
-				Decoration
-					.mark({ class: "chord-sheet-property-"+token.propertyName })
-					.range(propStart, propEnd),
-				Decoration
-					.mark({ class: "chord-sheet-property-tag" })
-					.range(tagStart, tagEnd),
-				Decoration
-					.mark({ class: "chord-sheet-property-value" })
-					.range(valueStart, valueEnd)
 			);
 		} else if (isSectionToken(token)) {
 			chordDecos.push(Decoration
