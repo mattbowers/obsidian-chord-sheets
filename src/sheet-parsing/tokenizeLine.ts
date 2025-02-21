@@ -175,9 +175,6 @@ export function tokenizeLine(line: string, lineIndex: number, chordLineMarker: s
 								}
 							};
 							tokens.push(chordToken);
-							if (trailingText) {
-								wordTokenCount++;
-							}
 						} else {
 							// does not look like a chord, treat as word
 							tokens.push({type: "word", ...baseToken});
