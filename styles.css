@@ -22,7 +22,7 @@ settings:
         title: Chord symbol font weight
         description: Font weight used for chord symbols.
         type: variable-select
-        default: normal
+        default: bolder
         options:
             - '100'
             - '200'
@@ -282,7 +282,7 @@ settings:
             - bolder
             - inherit
 
-	## RHYTHM MARKERS
+	## RYHTM MARKERS
     -
         id: rhythm-markers
         title: Rhythm markers
@@ -454,7 +454,6 @@ settings:
             - lighter
             - bolder
             - inherit
-
 */
 
 .chord-sheet-chord-line .chord-sheet-chord {
@@ -728,6 +727,8 @@ code.chord-sheet-chord-block-preview {
 	& select {
 		color: var(--icon-color);
 		opacity: var(--icon-opacity);
+		min-width: 9em;
+		field-sizing: content;
 	}
 
 	& svg {
@@ -860,6 +861,42 @@ svg.enharmonic-toggle {
 	width: 20px;
 	.S {color: darkred}
 	.E {color: palevioletred}
+}
+
+/* Display inline chords over lyrics */
+
+.markdown-reading-view div.chord-sheet-inline-over-lyrics {
+	display: flex;
+	align-items: flex-end;
+	flex-wrap: wrap;
+
+	.chord-sheet-chord {
+		margin-inline-end: 1ch;
+	}
+}
+
+.markdown-reading-view div.chord-sheet-inline-over-lyrics .chord-sheet-chord-text-pair {
+	display: inline-flex;
+	flex-direction: column;
+	align-items: flex-start;
+	justify-content: end;
+
+	/* prevent wrapping of inline chord at the end of a line without trailing spaces */
+	.chord-sheet-inline-chord-trailing-text:empty:after {
+		content: " ";
+	}
+}
+
+/* collapse empty lyric line for lines with only inline chords */
+.markdown-reading-view div.chord-sheet-inline-over-lyrics:not(:has(.chord-sheet-word)) .chord-sheet-inline-chord-trailing-text {
+	height: 0;
+	:after {
+		content: none;
+	}
+}
+
+.markdown-reading-view div.chord-sheet-inline-over-lyrics .chord-sheet-inline-chord-bracket {
+	display: none;
 }
 
 /* Property tokens */

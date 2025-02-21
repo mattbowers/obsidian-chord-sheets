@@ -60,18 +60,16 @@ export function findDbChord(chordToken: ChordToken, instrumentChords: Instrument
 			testChord => chordToken.chord.typeAliases.some(alias => testChord.suffix === alias + bassSuffix)
 		);
 		if (dbChord) return dbChord;
+	} else {
+		dbChord = instrumentChords.chords[tonicKey].find(
+			testChord => testChord.suffix === chordToken.chord.type
+		);
+		if (dbChord) return dbChord;
+
+		dbChord = instrumentChords.chords[tonicKey].find(
+			testChord => chordToken.chord.typeAliases.includes(testChord.suffix)
+		);
 	}
-
-	// Third priority: Exact match without bass note
-	dbChord = instrumentChords.chords[tonicKey].find(
-		testChord => testChord.suffix === chordToken.chord.type
-	);
-	if (dbChord) return dbChord;
-
-	// Fourth priority: Alias match without bass note
-	dbChord = instrumentChords.chords[tonicKey].find(
-		testChord => chordToken.chord.typeAliases.includes(testChord.suffix)
-	);
 
 	return dbChord ?? null;
 }
@@ -80,8 +78,8 @@ export function uniqueChordTokens(chordTokens: ChordToken[]) {
 	const seenValues = new Set<string>();
 
 	return chordTokens.filter(token => {
-		if (!seenValues.has(token.value)) {
-			seenValues.add(token.value);
+		if (!seenValues.has(token.chordSymbol.value)) {
+			seenValues.add(token.chordSymbol.value);
 			return true;
 		}
 		return false;
