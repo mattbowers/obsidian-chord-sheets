@@ -102,7 +102,7 @@ export function tokenizeLine(line: string, lineIndex: number, chordLineMarker: s
 
 		// Possible rhythm markers: bar lines (|), strums (/), repeats (%), etc
 		// Interpretation depends on line context.
-		wordOrRhythm: /^[[\]/|%]+/d,
+		wordOrRhythm: /^[[\]/|%.]+/d,
 
 		// Any text that isn't whitespace or starting with [ could be chord symbols.
 		// Interpretation depends on line context.
