@@ -912,13 +912,6 @@ svg.enharmonic-toggle {
 	display: inline;
 }
 
-/* Section token */
-span.chord-sheet-section {
-	font-family: var(--font-text);
-	color: var(--section-header-title-color, var(--bold-color));
-	font-weight: var(--section-header-title-font-weight, bolder);
-}
-
 /* Notation font support */
 .markdown-reading-view span.chord-sheet-notation,
 .markdown-source-view.mod-cm6.is-live-preview span.chord-sheet-notation {
