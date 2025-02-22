@@ -103,7 +103,6 @@ export function getClassFromQuote(openingQuote: string) : string {
 		case "=": return "chord-sheet-quoted-equals";
 		case "{": return "chord-sheet-quoted-curly";
 		case "<": return "chord-sheet-quoted-angle";
-		case "(": return "chord-sheet-quoted-round";
 	}
 	return "chord-sheet-quoted";
 }

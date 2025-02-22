@@ -26,7 +26,7 @@ import {
 	isHeaderToken, isQuotedToken,
 	isMarkerToken,
 	isNotationToken,
-	isRhythmToken, isSectionToken,
+	isRhythmToken, isInlineHeaderToken,
 	Token
 } from "../sheet-parsing/tokens";
 import {tokenizeLine} from "../sheet-parsing/tokenizeLine";
@@ -672,10 +672,19 @@ function chordDecosForLine(line: Line, {
 					.mark({ class: "chord-sheet-label-quote" })
 					.range(endTagStart, labelEnd)
 			);
-		} else if (isSectionToken(token)) {
+		} else if (isInlineHeaderToken(token)) {
+			const [headerStart, headerEnd] = token.range;
+			const [headerNameStart, headerNameEnd] = resolveIndex(token.headerName.range, token);
+			const endTagStart = resolveIndex(token.closingBracket.range, token)[0];
+
 			chordDecos.push(Decoration
-				.mark({ class: "chord-sheet-section", token })
-				.range(...token.range)
+					.mark({ class: "chord-sheet-section-header-content" })
+					.range(headerStart, headerEnd),
+				Decoration
+					.mark({ class: "chord-sheet-section-header-name cm-strong" })
+					.range(headerNameStart, headerNameEnd),
+				Decoration.mark({ class: "chord-sheet-section-header-bracket" })
+					.range(endTagStart, headerEnd)
 			);
 		} else if (highlightSectionHeaders && isHeaderToken(token)) {
 			const [headerStart, headerEnd] = token.range;

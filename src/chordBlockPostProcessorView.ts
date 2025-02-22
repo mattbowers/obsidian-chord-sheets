@@ -12,7 +12,7 @@ import {
 	isRhythmToken,
 	isNotationToken,
 	isQuotedToken,
-	isSectionToken, isEmbedToken
+	isInlineHeaderToken, isEmbedToken
 } from "./sheet-parsing/tokens";
 import {tokenizeLine} from "./sheet-parsing/tokenizeLine";
 import ChordSheetsPlugin from "./main";
@@ -180,10 +180,17 @@ export class ChordBlockPostProcessorView extends MarkdownRenderChild {
 						cls: `chord-sheet-notation`,
 						text: token.value
 					});
-				} else if (isSectionToken(token)) {
-					lineDiv.createSpan({
-						cls: `chord-sheet-section`,
-						text: token.value
+				} else if (isInlineHeaderToken(token)) {
+					const headerSpan = lineDiv.createSpan({
+						cls: "chord-sheet-section-header-content",
+					});
+					headerSpan.createSpan({
+						cls: `chord-sheet-section-header-name cm-strong`,
+						text: token.headerName.value
+					});
+					headerSpan.createSpan({
+						cls: `chord-sheet-section-header-bracket`,
+						text: token.closingBracket.value
 					});
 				} else if (isQuotedToken(token)) {
 					const labelSpan = lineDiv.createSpan({

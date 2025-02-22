@@ -5,9 +5,8 @@ import {
 	QuotedToken,
 	MarkerToken,
 	NotationToken,
-	SectionToken,
 	Token,
-	TokenizedLine
+	TokenizedLine, InlineHeaderToken
 } from "./tokens";
 import escapeStringRegexp from "escape-string-regexp";
 import {Chord} from "tonal";
@@ -81,13 +80,12 @@ export function tokenizeLine(line: string, lineIndex: number, chordLineMarker: s
 		smartQuoted: /^(?<open>‘)(?<text>[^’]+)(?<close>’)/d,
 		curlyQuoted: /^(?<open>\{)(?<text>[^}]+)(?<close>})/d,
 		angleQuoted: /^(?<open><)(?<text>[^>]+)(?<close>>)/d,
-		roundQuoted: /^(?<open>\()(?<text>[^)]+)(?<close>\))/d,
 
 		// Match for embed
 		embed:  /^!\[\[(?<src>[^\[|]+)(?:(?:\|(?<width>\d+))(?:x(?<height>\d+))?)?]]/d,
 
-		// Match for section
-		section: /^[^:]+[:]/d,
+		// Match for inline header
+		inlineHeader: /^(?<name>[^:]+)(?<close>:)/d,
 
 		// Inline chord notation in brackets mixed with words, optional auxiliarry test, eg:
 		// [Am]Some [Dm aux. text]lyrics
@@ -239,17 +237,27 @@ export function tokenizeLine(line: string, lineIndex: number, chordLineMarker: s
 						tokens.push(notationToken);
 						break;
 					}
-					case "section": {
-						const sectionToken: SectionToken = {
-							...baseToken, type: "section"
+					case "inlineHeader": {
+						const {
+							name: nameText, close: closingBracket
+						} = match.groups!;
+						const {
+							name: nameTextRange, close: closingBracketRange
+						} = match.indices!.groups!;
+
+						const inlineHeaderToken: InlineHeaderToken = {
+							type: "inlineHeader",
+							value: matchValue,
+							range: offsetRange(matchRange, pos),
+							headerName: {value: nameText, range: nameTextRange},
+							closingBracket: { value: closingBracket, range: closingBracketRange }
 						};
-						tokens.push(sectionToken);
+						tokens.push(inlineHeaderToken);
 						break;
 					}
 					case "smartQuoted":
 					case "curlyQuoted":
 					case "angleQuoted":
-					case "roundQuoted":
 					case "quoted": {
 						const {
 							open: openingQuote, text: quotedText, close: closingQuote
