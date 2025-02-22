@@ -11,7 +11,7 @@ import {
 	isMarkerToken,
 	isRhythmToken,
 	isNotationToken,
-	isLabelToken,
+	isQuotedToken,
 	isSectionToken, isEmbedToken
 } from "./sheet-parsing/tokens";
 import {tokenizeLine} from "./sheet-parsing/tokenizeLine";
@@ -185,7 +185,7 @@ export class ChordBlockPostProcessorView extends MarkdownRenderChild {
 						cls: `chord-sheet-section`,
 						text: token.value
 					});
-				} else if (isLabelToken(token)) {
+				} else if (isQuotedToken(token)) {
 					const labelSpan = lineDiv.createSpan({
 						cls: "chord-sheet-label" + token.labelType,
 					});

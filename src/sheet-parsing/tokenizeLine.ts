@@ -2,7 +2,7 @@ import {
 	ChordInfo,
 	ChordToken, EmbedToken,
 	HeaderToken,
-	LabelToken,
+	QuotedToken,
 	MarkerToken,
 	NotationToken,
 	SectionToken,
@@ -75,11 +75,11 @@ export function tokenizeLine(line: string, lineIndex: number, chordLineMarker: s
 		notation: /^[@][^\s]+/d,
 
 		// Match for quoted label
-		label: /^(?<open>['_!$%^*_+=:])(?<text>[^\1]+)(?<close>\1)/d,
+		quoted: /^(?<open>['_!$%^*_+=:])(?<text>[^\1]+)(?<close>\1)/d,
 
-		labelSmartQuote: /^(?<open>‘)(?<text>[^’]+)(?<close>’)/d,
+		smartQuoted: /^(?<open>‘)(?<text>[^’]+)(?<close>’)/d,
 
-		labelChordProComment: /^(?<open>\{comment: )(?<text>[^}]+)(?<close>})/d,
+		curlyQuoted: /^(?<open>\{comment: )(?<text>[^}]+)(?<close>})/d,
 
 
 		// Match for embed
@@ -245,9 +245,9 @@ export function tokenizeLine(line: string, lineIndex: number, chordLineMarker: s
 						tokens.push(sectionToken);
 						break;
 					}
-					case "labelSmartQuote":
-					case "labelChordProComment":
-					case "label": {
+					case "smartQuoted":
+					case "curlyQuoted":
+					case "quoted": {
 						const {
 							open: openingQuote, text: labelText, close: closingQuote
 						} = match.groups!;
@@ -255,8 +255,8 @@ export function tokenizeLine(line: string, lineIndex: number, chordLineMarker: s
 							open: openingQuoteRange, text: textRange, close: closingQuoteRange
 						} = match.indices!.groups!;
 
-						const labelToken: LabelToken = {
-							type: "label",
+						const quotedToken: QuotedToken = {
+							type: "quoted",
 							labelType: "",
 							value: matchValue,
 							range: offsetRange(matchRange, pos),
@@ -267,11 +267,11 @@ export function tokenizeLine(line: string, lineIndex: number, chordLineMarker: s
 						switch (openingQuote) {
 							case "'":
 							case "‘":
-							{ labelToken.labelType = "-cue";   break;}
-							case "_": { labelToken.labelType = "-patch"; break;}
-							case "{comment: ": labelToken.labelType = "-chordpro-comment"; break;
+							{ quotedToken.labelType = "-cue";   break;}
+							case "_": { quotedToken.labelType = "-patch"; break;}
+							case "{comment: ": quotedToken.labelType = "-chordpro-comment"; break;
 						}
-						tokens.push(labelToken);
+						tokens.push(quotedToken);
 						break;
 					}
 					case "embed": {

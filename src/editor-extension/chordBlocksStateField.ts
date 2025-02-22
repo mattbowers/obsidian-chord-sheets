@@ -23,7 +23,7 @@ import ChordsDB from "@tombatossals/chords-db";
 import {
 	ChordToken,
 	isChordToken,
-	isHeaderToken, isLabelToken,
+	isHeaderToken, isQuotedToken,
 	isMarkerToken,
 	isNotationToken,
 	isRhythmToken, isSectionToken,
@@ -652,7 +652,7 @@ function chordDecosForLine(line: Line, {
 				.mark({class: "chord-sheet-notation", token})
 				.range(...token.range)
 			);
-		} else if (isLabelToken(token)) {
+		} else if (isQuotedToken(token)) {
 			const [labelStart, labelEnd] = token.range;
 			const [startTagStart, startTagEnd] = resolveIndex(token.openingQuote.range, token);
 			const [labelNameStart, labelNameEnd] = resolveIndex(token.labelText.range, token);
