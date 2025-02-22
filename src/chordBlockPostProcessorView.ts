@@ -1,5 +1,5 @@
 import {MarkdownRenderChild, TFile} from "obsidian";
-import {Instrument, uniqueChordTokens} from "./chordsUtils";
+import {getClassFromQuote, Instrument, uniqueChordTokens} from "./chordsUtils";
 import tippy from "tippy.js/headless";
 import {makeChordDiagram, makeChordOverview} from "./chordDiagrams";
 import {ChordSheetsSettings} from "./chordSheetsSettings";
@@ -187,18 +187,18 @@ export class ChordBlockPostProcessorView extends MarkdownRenderChild {
 					});
 				} else if (isQuotedToken(token)) {
 					const labelSpan = lineDiv.createSpan({
-						cls: "chord-sheet-label" + token.labelType,
+						cls: getClassFromQuote(token.openingQuote.value)
 					});
 					labelSpan.createSpan({
-						cls: `chord-sheet-label-quote`,
+						cls: `chord-sheet-quoted-quote`,
 						text: token.openingQuote.value
 					});
 					labelSpan.createSpan({
-						cls: `chord-sheet-label-text`,
-						text: token.labelText.value
+						cls: `chord-sheet-quoted-text`,
+						text: token.quotedText.value
 					});
 					labelSpan.createSpan({
-						cls: `chord-sheet-label-quote`,
+						cls: `chord-sheet-quoted-quote`,
 						text: token.closingQuote.value
 					});
 
@@ -277,5 +277,4 @@ export class ChordBlockPostProcessorView extends MarkdownRenderChild {
 		});
 
 	}
-
 }

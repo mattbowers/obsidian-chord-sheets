@@ -89,3 +89,21 @@ export function uniqueChordTokens(chordTokens: ChordToken[]) {
 export function chordSequenceString(chordTokens: ChordToken[]) {
 	return JSON.stringify(chordTokens.map(token => token.value));
 }
+export function getClassFromQuote(openingQuote: string) : string {
+	switch (openingQuote) {
+		case "'": return "chord-sheet-quoted-lyric-cue";
+		case "‘": return "chord-sheet-quoted-lyric-cue";
+		case "_": return "chord-sheet-quoted-underscore";
+		case "!": return "chord-sheet-quoted-pling";
+		case "$": return "chord-sheet-quoted-dollar";
+		case "%": return "chord-sheet-quoted-percent";
+		case "^": return "chord-sheet-quoted-acute";
+		case "*": return "chord-sheet-quoted-star";
+		case "+": return "chord-sheet-quoted-plus";
+		case "=": return "chord-sheet-quoted-equals";
+		case "{": return "chord-sheet-quoted-curly";
+		case "<": return "chord-sheet-quoted-angle";
+		case "(": return "chord-sheet-quoted-round";
+	}
+	return "chord-sheet-quoted";
+}

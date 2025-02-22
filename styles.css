@@ -902,12 +902,12 @@ svg.enharmonic-toggle {
 /* Label token */
 
 /* Hide label quotes for everything in reading view...*/
-.markdown-reading-view span.chord-sheet-label-quote {
+.markdown-reading-view span.chord-sheet-quoted-quote {
 	visibility: collapse;
 	display: none;
 }
 /* ...except cues */
-.markdown-reading-view span.chord-sheet-label-cue span.chord-sheet-label-quote {
+.markdown-reading-view span.chord-sheet-quoted-lyric-cue span.chord-sheet-quoted-quote {
 	visibility: visible;
 	display: inline;
 }
@@ -927,9 +927,9 @@ span.chord-sheet-section {
 	font-variant-ligatures: common-ligatures discretionary-ligatures historical-ligatures contextual;
 	line-height: 1.5;
 	display: inline-block;
-	width: .6em;
+	min-width: .7em;
 	font-weight: lighter;
-	font-size: 90%;
+	font-size: 100%;
 }
 
 @font-face {

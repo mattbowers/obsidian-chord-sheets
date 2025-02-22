@@ -1,4 +1,4 @@
-import {Instrument} from "../chordsUtils";
+import {getClassFromQuote, Instrument} from "../chordsUtils";
 import {Decoration, DecorationSet, EditorView, ViewUpdate} from "@codemirror/view";
 import {
 	Compartment,
@@ -655,12 +655,12 @@ function chordDecosForLine(line: Line, {
 		} else if (isQuotedToken(token)) {
 			const [labelStart, labelEnd] = token.range;
 			const [startTagStart, startTagEnd] = resolveIndex(token.openingQuote.range, token);
-			const [labelNameStart, labelNameEnd] = resolveIndex(token.labelText.range, token);
+			const [labelNameStart, labelNameEnd] = resolveIndex(token.quotedText.range, token);
 			const [endTagStart, endTagEnd] = resolveIndex(token.closingQuote.range, token);
 
 			chordDecos.push(
 				Decoration
-					.mark({ class: "chord-sheet-label"+token.labelType })
+					.mark({ class: getClassFromQuote(token.openingQuote.value)})
 					.range(labelStart, labelEnd),
 				Decoration
 					.mark({ class: "chord-sheet-label-quote" })

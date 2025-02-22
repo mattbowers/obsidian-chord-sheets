@@ -74,13 +74,14 @@ export function tokenizeLine(line: string, lineIndex: number, chordLineMarker: s
 		// Match for @xxxx MusGlyphs notation
 		notation: /^[@][^\s]+/d,
 
-		// Match for quoted label
-		quoted: /^(?<open>['_!$%^*_+=:])(?<text>[^\1]+)(?<close>\1)/d,
+		// Match for quoted label using identical symbols pairs
+		quoted: /^(?<open>['_!$%^*+=])(?<text>[^\1]+)(?<close>\1)/d,
 
+		// Match for quoted label using symmetric symbol pairs
 		smartQuoted: /^(?<open>‘)(?<text>[^’]+)(?<close>’)/d,
-
-		curlyQuoted: /^(?<open>\{comment: )(?<text>[^}]+)(?<close>})/d,
-
+		curlyQuoted: /^(?<open>\{)(?<text>[^}]+)(?<close>})/d,
+		angleQuoted: /^(?<open><)(?<text>[^>]+)(?<close>>)/d,
+		roundQuoted: /^(?<open>\()(?<text>[^)]+)(?<close>\))/d,
 
 		// Match for embed
 		embed:  /^!\[\[(?<src>[^\[|]+)(?:(?:\|(?<width>\d+))(?:x(?<height>\d+))?)?]]/d,
@@ -247,9 +248,11 @@ export function tokenizeLine(line: string, lineIndex: number, chordLineMarker: s
 					}
 					case "smartQuoted":
 					case "curlyQuoted":
+					case "angleQuoted":
+					case "roundQuoted":
 					case "quoted": {
 						const {
-							open: openingQuote, text: labelText, close: closingQuote
+							open: openingQuote, text: quotedText, close: closingQuote
 						} = match.groups!;
 						const {
 							open: openingQuoteRange, text: textRange, close: closingQuoteRange
@@ -257,20 +260,12 @@ export function tokenizeLine(line: string, lineIndex: number, chordLineMarker: s
 
 						const quotedToken: QuotedToken = {
 							type: "quoted",
-							labelType: "",
 							value: matchValue,
 							range: offsetRange(matchRange, pos),
 							openingQuote: { value: openingQuote, range: openingQuoteRange },
-							labelText: {value: labelText, range: textRange},
+							quotedText: {value: quotedText, range: textRange},
 							closingQuote: { value: closingQuote, range: closingQuoteRange }
 						};
-						switch (openingQuote) {
-							case "'":
-							case "‘":
-							{ quotedToken.labelType = "-cue";   break;}
-							case "_": { quotedToken.labelType = "-patch"; break;}
-							case "{comment: ": quotedToken.labelType = "-chordpro-comment"; break;
-						}
 						tokens.push(quotedToken);
 						break;
 					}

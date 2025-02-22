@@ -45,9 +45,8 @@ export interface NotationToken extends Token {
 }
 export interface QuotedToken extends Token {
 	type: 'quoted'
-	labelType: string
 	openingQuote: SubToken
-	labelText: SubToken
+	quotedText: SubToken
 	closingQuote: SubToken
 }
 export interface EmbedToken extends Token {
