@@ -24,9 +24,9 @@ import {enharmonicToggle, transpose} from "./chordProcessing";
 
 
 const AUTOSCROLL_SPEED_PROPERTY = "autoscroll-speed";
-const TEMPO_PROPERTY = "Tempo";
-const KEY_PROPERTY = "Key";
-const PATCH_PROPERTY = "Patch";
+const TEMPO_PROPERTY = "tempo";
+const KEY_PROPERTY = "key";
+const PATCH_PROPERTY = "patch";
 
 
 export default class ChordSheetsPlugin extends Plugin implements IChordSheetsPlugin {
@@ -56,7 +56,8 @@ export default class ChordSheetsPlugin extends Plugin implements IChordSheetsPlu
 						codeblock.parentElement!,
 						instrument as Instrument,
 						this.settings,
-						this
+						this,
+						context.sourcePath
 					));
 				}
 			}
