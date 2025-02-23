@@ -21,6 +21,7 @@ import {chordSheetsEditorExtension} from "./editor-extension/chordSheetsEditorEx
 import ChordsDB from "@tombatossals/chords-db";
 import {addCustomChordTypes} from "./customChordTypes";
 import {enharmonicToggle, transpose} from "./chordProcessing";
+import {context} from "esbuild";
 
 
 const AUTOSCROLL_SPEED_PROPERTY = "autoscroll-speed";
@@ -35,6 +36,7 @@ export default class ChordSheetsPlugin extends Plugin implements IChordSheetsPlu
 	editorExtension: Extension[] | null;
 	songPropertiesSummary = "";
 	viewAutoscrollControlMap = new WeakMap<View, AutoscrollControl>();
+	sourcePath: string;
 
 	async onload() {
 		addCustomChordTypes();
@@ -46,6 +48,7 @@ export default class ChordSheetsPlugin extends Plugin implements IChordSheetsPlu
 
 		this.registerMarkdownPostProcessor((element, context) => {
 			const codeblocks = element.querySelectorAll("code[class*=language-chords]");
+			this.sourcePath = context.sourcePath;
 			for (let index = 0; index < codeblocks.length; index++) {
 				const codeblock = codeblocks.item(index);
 				const langClass = Array.from(codeblock.classList).find(cls => cls.startsWith("language-chords"))?.substring(9);
@@ -56,8 +59,7 @@ export default class ChordSheetsPlugin extends Plugin implements IChordSheetsPlu
 						codeblock.parentElement!,
 						instrument as Instrument,
 						this.settings,
-						this,
-						context.sourcePath
+						this
 					));
 				}
 			}
@@ -401,32 +403,28 @@ export default class ChordSheetsPlugin extends Plugin implements IChordSheetsPlu
 	}
 
 	getSongPropertiesSummary() : string {
-		const view = this.app.workspace.getActiveViewOfType(MarkdownView);
-		if (!view) {
+		const chordBlockFile = this.app.vault.getAbstractFileByPath(this.sourcePath) as TFile | null;
+		if (!chordBlockFile) {
 			return this.songPropertiesSummary;
 		}
-		const activeFile : TFile | null = view.file;
-		if (!activeFile) {
-			return this.songPropertiesSummary;
-		}
-		this.songPropertiesSummary = this.getSongPropertiesFromFrontmatter(activeFile);
+		this.songPropertiesSummary = this.getSongPropertiesFromFrontmatter(chordBlockFile);
 		return this.songPropertiesSummary;
 	}
 
-	private addSongPropertyFromFrontmatter(array : string[], name : string, activeFile : TFile, prefix : string, suffix : string) {
-		if (!activeFile) {
+	private addSongPropertyFromFrontmatter(array : string[], name : string, chordBlockFile : TFile, prefix : string, suffix : string) {
+		if (!chordBlockFile) {
 			return;
 		}
-		const propValue : string = this.app.metadataCache.getFileCache(activeFile)?.frontmatter?.[name];
+		const propValue : string = this.app.metadataCache.getFileCache(chordBlockFile)?.frontmatter?.[name];
 		if (propValue) { array.push(prefix+propValue+suffix); }
 	}
 
-	private getSongPropertiesFromFrontmatter(activeFile : TFile): string {
+	private getSongPropertiesFromFrontmatter(chordBlockFile : TFile): string {
 		const frontmatterSongProperties : string[] = [];
 
-		this.addSongPropertyFromFrontmatter(frontmatterSongProperties, PATCH_PROPERTY, activeFile, "", "");
-		this.addSongPropertyFromFrontmatter(frontmatterSongProperties, KEY_PROPERTY, activeFile, "key of ", "");
-		this.addSongPropertyFromFrontmatter(frontmatterSongProperties, TEMPO_PROPERTY, activeFile, "", " bpm");
+		this.addSongPropertyFromFrontmatter(frontmatterSongProperties, PATCH_PROPERTY, chordBlockFile, "", "");
+		this.addSongPropertyFromFrontmatter(frontmatterSongProperties, KEY_PROPERTY, chordBlockFile, "key of ", "");
+		this.addSongPropertyFromFrontmatter(frontmatterSongProperties, TEMPO_PROPERTY, chordBlockFile, "", " bpm");
 
 		return frontmatterSongProperties.join("  |  ");
 	}
