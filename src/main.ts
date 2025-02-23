@@ -24,12 +24,16 @@ import {enharmonicToggle, transpose} from "./chordProcessing";
 
 
 const AUTOSCROLL_SPEED_PROPERTY = "autoscroll-speed";
+const TEMPO_PROPERTY = "Tempo";
+const KEY_PROPERTY = "Key";
+const PATCH_PROPERTY = "Patch";
+
 
 export default class ChordSheetsPlugin extends Plugin implements IChordSheetsPlugin {
 	settings: ChordSheetsSettings;
 	editorPlugin: ViewPlugin<ChordSheetsViewPlugin>;
 	editorExtension: Extension[] | null;
-
+	songPropertiesSummary = "";
 	viewAutoscrollControlMap = new WeakMap<View, AutoscrollControl>();
 
 	async onload() {
@@ -393,6 +397,37 @@ export default class ChordSheetsPlugin extends Plugin implements IChordSheetsPlu
 		return frontmatterSpeedNumber && !isNaN(frontmatterSpeedNumber)
 			? frontmatterSpeedNumber
 			: null;
+	}
+
+	getSongPropertiesSummary() : string {
+		const view = this.app.workspace.getActiveViewOfType(MarkdownView);
+		if (!view) {
+			return this.songPropertiesSummary;
+		}
+		const activeFile : TFile | null = view.file;
+		if (!activeFile) {
+			return this.songPropertiesSummary;
+		}
+		this.songPropertiesSummary = this.getSongPropertiesFromFrontmatter(activeFile);
+		return this.songPropertiesSummary;
+	}
+
+	private addSongPropertyFromFrontmatter(array : string[], name : string, activeFile : TFile, prefix : string, suffix : string) {
+		if (!activeFile) {
+			return;
+		}
+		const propValue : string = this.app.metadataCache.getFileCache(activeFile)?.frontmatter?.[name];
+		if (propValue) { array.push(prefix+propValue+suffix); }
+	}
+
+	private getSongPropertiesFromFrontmatter(activeFile : TFile): string {
+		const frontmatterSongProperties : string[] = [];
+
+		this.addSongPropertyFromFrontmatter(frontmatterSongProperties, PATCH_PROPERTY, activeFile, "", "");
+		this.addSongPropertyFromFrontmatter(frontmatterSongProperties, KEY_PROPERTY, activeFile, "key of ", "");
+		this.addSongPropertyFromFrontmatter(frontmatterSongProperties, TEMPO_PROPERTY, activeFile, "", " bpm");
+
+		return frontmatterSongProperties.join("  |  ");
 	}
 
 	private startAutoscroll(view: MarkdownView) {
