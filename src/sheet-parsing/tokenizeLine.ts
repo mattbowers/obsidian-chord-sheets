@@ -73,13 +73,13 @@ export function tokenizeLine(line: string, lineIndex: number, chordLineMarker: s
 		// Match for @xxxx MusGlyphs notation
 		notation: /^[@][^\s]+/d,
 
-		// Match for quoted label using identical symbols pairs
-		quoted: /^(?<open>['_!$%^*+=])(?<text>[^\1]+)(?<close>\1)/d,
+		// Match for quoted label using identical symbols pairs (lazy matching syntax to avoid nested quotes)
+		quoted: /^(?<open>['_!$%^*+=])(?<text>[^\1]+?)(?<close>\1)/d,
 
 		// Match for quoted label using symmetric symbol pairs
-		smartQuoted: /^(?<open>‘)(?<text>[^’]+)(?<close>’)/d,
-		curlyQuoted: /^(?<open>\{)(?<text>[^}]+)(?<close>})/d,
-		angleQuoted: /^(?<open><)(?<text>[^>]+)(?<close>>)/d,
+		smartQuoted: /^(?<open>‘)(?<text>[^’]+?)(?<close>’)/d,
+		curlyQuoted: /^(?<open>\{)(?<text>[^}]+?)(?<close>})/d,
+		angleQuoted: /^(?<open><)(?<text>[^>]+?)(?<close>>)/d,
 
 		// Match for embed
 		embed:  /^!\[\[(?<src>[^\[|]+)(?:(?:\|(?<width>\d+))(?:x(?<height>\d+))?)?]]/d,
