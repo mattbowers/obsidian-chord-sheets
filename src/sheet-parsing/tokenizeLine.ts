@@ -77,7 +77,7 @@ export function tokenizeLine(line: string, lineIndex: number, chordLineMarker: s
 		notation: /^[@][^\s]+/d,
 
 		// Match for quoted label using identical symbols pairs (lazy matching syntax to avoid nested quotes)
-		quoted: /^(?<open>['_!$%^*+=])(?<text>[^\1]+?)(?<close>\1)/d,
+		quoted: /^(?<open>['_!$%^*+=~])(?<text>[^\1]+?)(?<close>\1)/d,
 
 		// Match for quoted label using symmetric symbol pairs
 		smartQuoted: /^(?<open>‘)(?<text>[^’]+?)(?<close>’)/d,
