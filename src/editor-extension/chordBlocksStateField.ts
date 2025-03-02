@@ -1,4 +1,4 @@
-import {getSymbolFromShortcut, getTypeFromQuote, Instrument} from "../chordsUtils";
+import {getTypeFromQuote, Instrument} from "../chordsUtils";
 import {Decoration, DecorationSet, EditorView, ViewUpdate} from "@codemirror/view";
 import {
 	Compartment,
@@ -27,7 +27,7 @@ import {
 	isMarkerToken,
 	isNotationToken,
 	isRhythmToken, isInlineHeaderToken,
-	Token, isSymbolToken
+	Token, isDirectionToken,
 } from "../sheet-parsing/tokens";
 import {tokenizeLine} from "../sheet-parsing/tokenizeLine";
 
@@ -652,12 +652,6 @@ function chordDecosForLine(line: Line, {
 				.mark({class: "chord-sheet-notation", token})
 				.range(...token.range)
 			);
-		} else if (isSymbolToken(token)) {
-			const details = getSymbolFromShortcut(token.value);
-			chordDecos.push(Decoration
-				.mark({class: "chord-sheet-symbol", attributes: { symbol: details.symbol }, token})
-				.range(...token.range)
-			);
 		} else if (isQuotedToken(token)) {
 			const [labelStart, labelEnd] = token.range;
 			const [startTagStart, startTagEnd] = resolveIndex(token.openingQuote.range, token);
@@ -678,6 +672,22 @@ function chordDecosForLine(line: Line, {
 				Decoration
 					.mark({ class: "chord-sheet-label-quote" })
 					.range(endTagStart, labelEnd)
+			);
+		} else if (isDirectionToken(token)) {
+			const [labelStart, labelEnd] = token.range;
+			const [startTagStart, startTagEnd] = resolveIndex(token.opening.range, token);
+			const [labelNameStart, labelNameEnd] = resolveIndex(token.directionText.range, token);
+
+			chordDecos.push(
+				Decoration
+					.mark({ class: "chord-sheet-direction" })
+					.range(labelStart, labelEnd),
+				Decoration
+					.mark({ class: "chord-sheet-direction-opening" })
+					.range(startTagStart, startTagEnd),
+				Decoration
+					.mark({ class: "chord-sheet-direction-text" })
+					.range(labelNameStart, labelNameEnd),
 			);
 		} else if (isInlineHeaderToken(token)) {
 			const [headerStart, headerEnd] = token.range;

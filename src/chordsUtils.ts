@@ -107,14 +107,3 @@ export function getTypeFromQuote(openingQuote: string) : string {
 	}
 	return "chord-sheet-quoted";
 }
-export interface SymbolDetails {
-	symbol: string;
-	content: string;
-}
-export function getSymbolFromShortcut(shortcut: string) : SymbolDetails  {
-	switch (shortcut) {
-		case "->": return { symbol:"right-arrow", content: "→" } ;
-		case "<-": return { symbol:"left-arrow", content: "←" };
-	}
-	return { symbol:"unknown", content: shortcut };
-}

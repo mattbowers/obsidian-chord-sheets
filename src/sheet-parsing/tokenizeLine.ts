@@ -6,7 +6,7 @@ import {
 	MarkerToken,
 	NotationToken,
 	Token,
-	TokenizedLine, InlineHeaderToken, SymbolToken, DirectionToken
+	TokenizedLine, InlineHeaderToken, DirectionToken
 } from "./tokens";
 import escapeStringRegexp from "escape-string-regexp";
 import {Chord} from "tonal";
@@ -70,11 +70,14 @@ export function tokenizeLine(line: string, lineIndex: number, chordLineMarker: s
 		// line type markers at the end of the line, can be user defined, default "%t" and "%c"
 		lineMarker: new RegExp(`^(?<marker>${textLineMarkerPattern}|${chordLineMarkerPattern})\\s*$`, "d"),
 
-		// Match for symbol shortcuts
-		symbol: /^(->|<-)/d,
-
 		// Match for @xxxx MusGlyphs notation
 		notation: /^[@][^\s]+/d,
+
+		// Match for directions
+		// x2 - open with a repeat mark
+		// -> - open with an arrow
+		// // - open with a double-slash
+		direction: /^(?<open>(x\d+|->|\/\/\s?))(?<text>.+)$/d,
 
 		// Match for quoted label using identical symbols pairs (lazy matching syntax to avoid nested quotes)
 		quoted: /^(?<open>['_!$%^*+=~])(?<text>[^\1]+?)(?<close>\1)/d,
@@ -101,7 +104,7 @@ export function tokenizeLine(line: string, lineIndex: number, chordLineMarker: s
 
 		// Possible rhythm markers: bar lines (|), strums (/), repeats (%), etc
 		// Interpretation depends on line context.
-		wordOrRhythm: /^[[\]/|%.]+/d,
+		wordOrRhythm: /^[[\]/|%.-]+/d,
 
 		// Any text that isn't whitespace or starting with [ could be chord symbols.
 		// Interpretation depends on line context.
@@ -110,10 +113,6 @@ export function tokenizeLine(line: string, lineIndex: number, chordLineMarker: s
 		// Record whitespace so that the input can be exactly recreated in the reading
 		// view markdown post processor
 		whitespace: /^\s+/d,
-
-
-		// Match for plain text at end of line
-		direction: /^[\sa-zA-Z0-9,.()']+$/d,
 
 	};
 
@@ -245,6 +244,24 @@ export function tokenizeLine(line: string, lineIndex: number, chordLineMarker: s
 						tokens.push(notationToken);
 						break;
 					}
+					case "direction": {
+						const {
+							open: openingQuote, text: quotedText
+						} = match.groups!;
+						const {
+							open: openingQuoteRange, text: textRange
+						} = match.indices!.groups!;
+
+						const directionToken: DirectionToken = {
+							type: "direction",
+							value: matchValue,
+							range: offsetRange(matchRange, pos),
+							opening: { value: openingQuote, range: openingQuoteRange },
+							directionText: {value: quotedText, range: textRange},
+						};
+						tokens.push(directionToken);
+						break;
+					}
 					case "inlineHeader": {
 						const {
 							name: nameText, close: closingBracket
@@ -303,20 +320,6 @@ export function tokenizeLine(line: string, lineIndex: number, chordLineMarker: s
 						break;
 					}
 
-					case "symbol": {
-						const symbolToken: SymbolToken = {
-							...baseToken, type: "symbol"
-						};
-						tokens.push(symbolToken);
-						break;
-					}
-					case "direction": {
-						const directionToken: DirectionToken = {
-							...baseToken, type: "direction"
-						};
-						tokens.push(directionToken);
-						break;
-					}
 					case "whitespace": {
 						tokens.push({...baseToken, type: "whitespace"});
 						break;

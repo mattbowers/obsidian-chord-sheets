@@ -1,5 +1,5 @@
 import {MarkdownRenderChild, TFile} from "obsidian";
-import {getSymbolFromShortcut, getTypeFromQuote, Instrument, uniqueChordTokens} from "./chordsUtils";
+import {getTypeFromQuote, Instrument, uniqueChordTokens} from "./chordsUtils";
 import tippy from "tippy.js/headless";
 import {makeChordDiagram, makeChordOverview} from "./chordDiagrams";
 import {ChordSheetsSettings} from "./chordSheetsSettings";
@@ -12,10 +12,20 @@ import {
 	isRhythmToken,
 	isNotationToken,
 	isQuotedToken,
-	isInlineHeaderToken, isEmbedToken, isSymbolToken, isDirectionToken
+	isInlineHeaderToken, isEmbedToken, isDirectionToken
 } from "./sheet-parsing/tokens";
 import {tokenizeLine} from "./sheet-parsing/tokenizeLine";
 import ChordSheetsPlugin from "./main";
+
+
+function processDirectionOpening(value: string) {
+		switch (value) {
+			case "// ": return "";
+			case "//": return "";
+			case "->": return "➔";
+		}
+		return value;
+	}
 
 export class ChordBlockPostProcessorView extends MarkdownRenderChild {
 	source: string;
@@ -65,6 +75,7 @@ export class ChordBlockPostProcessorView extends MarkdownRenderChild {
 		const chordTokens: ChordToken[] = [];
 		const lines = this.source.split("\n");
 		let currentIndex = 0;
+
 		for (const line of lines) {
 			const tokenizedLine = tokenizeLine(line, currentIndex, chordLineMarker, textLineMarker);
 
@@ -185,18 +196,6 @@ export class ChordBlockPostProcessorView extends MarkdownRenderChild {
 						cls: `chord-sheet-notation`,
 						text: token.value
 					});
-				} else if (isSymbolToken(token)) {
-					const details = getSymbolFromShortcut(token.value);
-					lineDiv.createSpan({
-						cls: `chord-sheet-symbol`,
-						attr: { symbol: details.symbol },
-						text: details.content
-					});
-				} else if (isDirectionToken(token)) {
-					lineDiv.createSpan({
-						cls: `chord-sheet-direction`,
-						text: token.value
-					});
 				} else if (isInlineHeaderToken(token)) {
 					const headerSpan = lineDiv.createSpan({
 						cls: "chord-sheet-section-header-content",
@@ -227,6 +226,18 @@ export class ChordBlockPostProcessorView extends MarkdownRenderChild {
 						text: token.closingQuote.value
 					});
 
+				} else if (isDirectionToken(token)) {
+					const labelSpan = lineDiv.createSpan({
+						cls: "chord-sheet-direction",
+					});
+					labelSpan.createSpan({
+						cls: `chord-sheet-direction-opening`,
+						text: processDirectionOpening(token.opening.value)
+					});
+					labelSpan.createSpan({
+						cls: `chord-sheet-direction-text`,
+						text: token.directionText.value
+					});
 				} else if (isEmbedToken(token)) {
 					const embedSpan = lineDiv.createSpan({
 						cls: "chord-sheet-embed",
@@ -302,4 +313,5 @@ export class ChordBlockPostProcessorView extends MarkdownRenderChild {
 		});
 
 	}
+
 }
