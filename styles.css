@@ -899,19 +899,6 @@ svg.enharmonic-toggle {
 	display: none;
 }
 
-/* Label token */
-
-/* Hide label quotes for everything in reading view...*/
-.markdown-reading-view span.chord-sheet-quoted-quote {
-	visibility: collapse;
-	display: none;
-}
-/* ...except cues */
-.markdown-reading-view span.chord-sheet-quoted-lyric-cue span.chord-sheet-quoted-quote {
-	visibility: visible;
-	display: inline;
-}
-
 /* Notation font support */
 .markdown-reading-view span.chord-sheet-notation,
 .markdown-source-view.mod-cm6.is-live-preview span.chord-sheet-notation {

@@ -1,4 +1,4 @@
-import {getClassFromQuote, getSymbolFromShortcut, Instrument} from "../chordsUtils";
+import {getSymbolFromShortcut, getTypeFromQuote, Instrument} from "../chordsUtils";
 import {Decoration, DecorationSet, EditorView, ViewUpdate} from "@codemirror/view";
 import {
 	Compartment,
@@ -666,7 +666,8 @@ function chordDecosForLine(line: Line, {
 
 			chordDecos.push(
 				Decoration
-					.mark({ class: getClassFromQuote(token.openingQuote.value)})
+					.mark({ class: "chord-sheet-quoted",
+						attributes: { type: getTypeFromQuote(token.openingQuote.value) }})
 					.range(labelStart, labelEnd),
 				Decoration
 					.mark({ class: "chord-sheet-label-quote" })
