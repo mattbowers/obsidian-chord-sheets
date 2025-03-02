@@ -1,4 +1,4 @@
-import {getClassFromQuote, Instrument} from "../chordsUtils";
+import {getClassFromQuote, getSymbolFromShortcut, Instrument} from "../chordsUtils";
 import {Decoration, DecorationSet, EditorView, ViewUpdate} from "@codemirror/view";
 import {
 	Compartment,
@@ -27,7 +27,7 @@ import {
 	isMarkerToken,
 	isNotationToken,
 	isRhythmToken, isInlineHeaderToken,
-	Token
+	Token, isSymbolToken
 } from "../sheet-parsing/tokens";
 import {tokenizeLine} from "../sheet-parsing/tokenizeLine";
 
@@ -650,6 +650,12 @@ function chordDecosForLine(line: Line, {
 		} else if (isNotationToken(token)) {
 			chordDecos.push(Decoration
 				.mark({class: "chord-sheet-notation", token})
+				.range(...token.range)
+			);
+		} else if (isSymbolToken(token)) {
+			const details = getSymbolFromShortcut(token.value);
+			chordDecos.push(Decoration
+				.mark({class: "chord-sheet-symbol", attributes: { symbol: details.symbol }, token})
 				.range(...token.range)
 			);
 		} else if (isQuotedToken(token)) {

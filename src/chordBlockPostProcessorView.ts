@@ -1,5 +1,5 @@
 import {MarkdownRenderChild, TFile} from "obsidian";
-import {getClassFromQuote, Instrument, uniqueChordTokens} from "./chordsUtils";
+import {getClassFromQuote, getSymbolFromShortcut, Instrument, uniqueChordTokens} from "./chordsUtils";
 import tippy from "tippy.js/headless";
 import {makeChordDiagram, makeChordOverview} from "./chordDiagrams";
 import {ChordSheetsSettings} from "./chordSheetsSettings";
@@ -12,7 +12,7 @@ import {
 	isRhythmToken,
 	isNotationToken,
 	isQuotedToken,
-	isInlineHeaderToken, isEmbedToken
+	isInlineHeaderToken, isEmbedToken, isSymbolToken, isDirectionToken
 } from "./sheet-parsing/tokens";
 import {tokenizeLine} from "./sheet-parsing/tokenizeLine";
 import ChordSheetsPlugin from "./main";
@@ -183,6 +183,18 @@ export class ChordBlockPostProcessorView extends MarkdownRenderChild {
 				} else if (isNotationToken(token)) {
 					lineDiv.createSpan({
 						cls: `chord-sheet-notation`,
+						text: token.value
+					});
+				} else if (isSymbolToken(token)) {
+					const details = getSymbolFromShortcut(token.value);
+					lineDiv.createSpan({
+						cls: `chord-sheet-symbol`,
+						attr: { symbol: details.symbol },
+						text: details.content
+					});
+				} else if (isDirectionToken(token)) {
+					lineDiv.createSpan({
+						cls: `chord-sheet-direction`,
 						text: token.value
 					});
 				} else if (isInlineHeaderToken(token)) {

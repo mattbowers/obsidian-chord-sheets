@@ -6,7 +6,7 @@ import {
 	MarkerToken,
 	NotationToken,
 	Token,
-	TokenizedLine, InlineHeaderToken
+	TokenizedLine, InlineHeaderToken, SymbolToken, DirectionToken
 } from "./tokens";
 import escapeStringRegexp from "escape-string-regexp";
 import {Chord} from "tonal";
@@ -70,6 +70,9 @@ export function tokenizeLine(line: string, lineIndex: number, chordLineMarker: s
 		// line type markers at the end of the line, can be user defined, default "%t" and "%c"
 		lineMarker: new RegExp(`^(?<marker>${textLineMarkerPattern}|${chordLineMarkerPattern})\\s*$`, "d"),
 
+		// Match for symbol shortcuts
+		symbol: /^(->|<-)/d,
+
 		// Match for @xxxx MusGlyphs notation
 		notation: /^[@][^\s]+/d,
 
@@ -107,6 +110,11 @@ export function tokenizeLine(line: string, lineIndex: number, chordLineMarker: s
 		// Record whitespace so that the input can be exactly recreated in the reading
 		// view markdown post processor
 		whitespace: /^\s+/d,
+
+
+		// Match for plain text at end of line
+		direction: /^[\sa-zA-Z0-9,.()']+$/d,
+
 	};
 
 
@@ -292,6 +300,21 @@ export function tokenizeLine(line: string, lineIndex: number, chordLineMarker: s
 						};
 
 						tokens.push(embedToken);
+						break;
+					}
+
+					case "symbol": {
+						const symbolToken: SymbolToken = {
+							...baseToken, type: "symbol"
+						};
+						tokens.push(symbolToken);
+						break;
+					}
+					case "direction": {
+						const directionToken: DirectionToken = {
+							...baseToken, type: "direction"
+						};
+						tokens.push(directionToken);
 						break;
 					}
 					case "whitespace": {
