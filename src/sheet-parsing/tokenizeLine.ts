@@ -77,7 +77,7 @@ export function tokenizeLine(line: string, lineIndex: number, chordLineMarker: s
 		// x2 - open with a repeat mark
 		// -> - open with an arrow
 		// // - open with a double-slash
-		direction: /^(?<open>(x\d+|->|\/\/\s?))(?<text>.+)$/d,
+		direction: /^(?<open>(x\d+|->|\/\/\s?))(?<text>.*)$/d,
 
 		// Match for quoted label using identical symbols pairs (lazy matching syntax to avoid nested quotes)
 		quoted: /^(?<open>['_!$%^*+=~])(?<text>[^\1]+?)(?<close>\1)/d,

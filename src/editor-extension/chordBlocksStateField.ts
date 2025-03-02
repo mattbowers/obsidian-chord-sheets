@@ -685,10 +685,15 @@ function chordDecosForLine(line: Line, {
 				Decoration
 					.mark({ class: "chord-sheet-direction-opening" })
 					.range(startTagStart, startTagEnd),
-				Decoration
-					.mark({ class: "chord-sheet-direction-text" })
-					.range(labelNameStart, labelNameEnd),
 			);
+
+			if (token.directionText.value.length > 0) {
+				chordDecos.push(
+				Decoration
+					.mark({class: "chord-sheet-direction-text"})
+					.range(labelNameStart, labelNameEnd)
+				);
+			}
 		} else if (isInlineHeaderToken(token)) {
 			const [headerStart, headerEnd] = token.range;
 			const [headerNameStart, headerNameEnd] = resolveIndex(token.headerName.range, token);
