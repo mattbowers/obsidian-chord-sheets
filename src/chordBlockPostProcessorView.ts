@@ -12,7 +12,7 @@ import {
 	isRhythmToken,
 	isNotationToken,
 	isQuotedToken,
-	isInlineHeaderToken, isEmbedToken, isDirectionToken
+	isInlineHeaderToken, isEmbedToken, isDirectionToken, isBreakToken
 } from "./sheet-parsing/tokens";
 import {tokenizeLine} from "./sheet-parsing/tokenizeLine";
 import ChordSheetsPlugin from "./main";
@@ -196,6 +196,8 @@ export class ChordBlockPostProcessorView extends MarkdownRenderChild {
 						cls: `chord-sheet-notation`,
 						text: token.value
 					});
+				} else if (isBreakToken(token)) {
+					lineDiv.addClass("chord-sheet-column-break");
 				} else if (isInlineHeaderToken(token)) {
 					const headerSpan = lineDiv.createSpan({
 						cls: "chord-sheet-section-header-content",

@@ -6,7 +6,7 @@ import {
 	MarkerToken,
 	NotationToken,
 	Token,
-	TokenizedLine, InlineHeaderToken, DirectionToken
+	TokenizedLine, InlineHeaderToken, DirectionToken, BreakToken
 } from "./tokens";
 import escapeStringRegexp from "escape-string-regexp";
 import {Chord} from "tonal";
@@ -79,8 +79,11 @@ export function tokenizeLine(line: string, lineIndex: number, chordLineMarker: s
 		// // - open with a double-slash
 		direction: /^(?<open>(x\d+|->|\/\/\s?))(?<text>.*)$/d,
 
+		// Match for break directive: three dashes on a line on their own
+		break: /^---$/d,
+
 		// Match for quoted label using identical symbols pairs (lazy matching syntax to avoid nested quotes)
-		quoted: /^(?<open>['_!$%^*+=~])(?<text>[^\1]+?)(?<close>\1)/d,
+		quoted: /^(?<open>['_!$^*+=~])(?<text>[^\1]+?)(?<close>\1)/d,
 
 		// Match for quoted label using symmetric symbol pairs
 		smartQuoted: /^(?<open>‘)(?<text>[^’]+?)(?<close>’)/d,
@@ -242,6 +245,13 @@ export function tokenizeLine(line: string, lineIndex: number, chordLineMarker: s
 							...baseToken, type: "notation"
 						};
 						tokens.push(notationToken);
+						break;
+					}
+					case "break": {
+						const breakToken: BreakToken = {
+							...baseToken, type: "break"
+						};
+						tokens.push(breakToken);
 						break;
 					}
 					case "direction": {

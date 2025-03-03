@@ -96,7 +96,6 @@ export function getTypeFromQuote(openingQuote: string) : string {
 		case "_": return "underscore";
 		case "!": return "pling";
 		case "$": return "dollar";
-		case "%": return "percent";
 		case "^": return "acute";
 		case "*": return "star";
 		case "+": return "plus";

@@ -1,7 +1,7 @@
 import {SheetChord} from "../chordsUtils";
 
 export interface Token {
-	type: 'word' | 'chord' | 'whitespace' | 'marker' | 'header' | 'rhythm' | 'notation' | 'quoted' | 'inlineHeader' | 'embed' | 'direction';
+	type: 'word' | 'chord' | 'whitespace' | 'marker' | 'header' | 'rhythm' | 'notation' | 'quoted' | 'inlineHeader' | 'embed' | 'direction' | 'break';
 	value: string;
 	range: [start: number, end: number];
 }
@@ -55,7 +55,9 @@ export interface EmbedToken extends Token {
 	width: number
 	height: number
 }
-
+export interface BreakToken extends Token {
+	type: 'break'
+}
 export interface InlineHeaderToken extends Token {
 	type: 'inlineHeader'
 	headerName: SubToken
@@ -99,7 +101,9 @@ export function isInlineHeaderToken(token: Token | null | undefined): token is I
 export function isEmbedToken(token: Token | null | undefined): token is EmbedToken {
 	return !!token && token.type === 'embed';
 }
-
+export function isBreakToken(token: Token | null | undefined): token is BreakToken {
+	return !!token && token.type === 'break';
+}
 export function isMarkerToken(token: Token | null | undefined): token is MarkerToken {
 	return !!token && token.type === 'marker';
 }
