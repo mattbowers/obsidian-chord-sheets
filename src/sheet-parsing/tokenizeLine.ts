@@ -85,6 +85,9 @@ export function tokenizeLine(line: string, lineIndex: number, chordLineMarker: s
 		// Match for quoted label using identical symbols pairs (lazy matching syntax to avoid nested quotes)
 		quoted: /^(?<open>['_!$^*+=~])(?<text>[^\1]+?)(?<close>\1)/d,
 
+		// Match for ChordPro directives as a special case of quoted token
+		chordProQuoted: /^(?<open>\{[^:]+?:\s*)(?<text>[^}]+?)(?<close>})/d,
+
 		// Match for quoted label using symmetric symbol pairs
 		smartQuoted: /^(?<open>‘)(?<text>[^’]+?)(?<close>’)/d,
 		curlyQuoted: /^(?<open>\{)(?<text>[^}]+?)(?<close>})/d,
@@ -293,6 +296,7 @@ export function tokenizeLine(line: string, lineIndex: number, chordLineMarker: s
 					case "smartQuoted":
 					case "curlyQuoted":
 					case "angleQuoted":
+					case "chordProQuoted":
 					case "quoted": {
 						const {
 							open: openingQuote, text: quotedText, close: closingQuote
@@ -307,7 +311,8 @@ export function tokenizeLine(line: string, lineIndex: number, chordLineMarker: s
 							range: offsetRange(matchRange, pos),
 							openingQuote: { value: openingQuote, range: openingQuoteRange },
 							quotedText: {value: quotedText, range: textRange},
-							closingQuote: { value: closingQuote, range: closingQuoteRange }
+							closingQuote: { value: closingQuote, range: closingQuoteRange },
+							quoteType: getTypeFromQuote(openingQuote, name),
 						};
 						tokens.push(quotedToken);
 						break;
@@ -368,4 +373,27 @@ export function tokenizeLine(line: string, lineIndex: number, chordLineMarker: s
 	}
 
 	return {tokens, isChordLine};
+}
+
+function getTypeFromQuote(openingQuote: string, name: string) : string {
+	switch (name) {
+		case "chordProQuoted":
+			return "chordpro";
+	}
+
+	switch (openingQuote) {
+		case "'": return "lyric-cue";
+		case "‘": return "lyric-cue";
+		case "_": return "underscore";
+		case "!": return "pling";
+		case "$": return "dollar";
+		case "^": return "acute";
+		case "*": return "star";
+		case "+": return "plus";
+		case "=": return "equals";
+		case "{": return "curly";
+		case "<": return "angle";
+		case "~": return "tilde";
+	}
+	return "unknown";
 }

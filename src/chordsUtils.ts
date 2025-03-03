@@ -89,20 +89,3 @@ export function uniqueChordTokens(chordTokens: ChordToken[]) {
 export function chordSequenceString(chordTokens: ChordToken[]) {
 	return JSON.stringify(chordTokens.map(token => token.value));
 }
-export function getTypeFromQuote(openingQuote: string) : string {
-	switch (openingQuote) {
-		case "'": return "lyric-cue";
-		case "‘": return "lyric-cue";
-		case "_": return "underscore";
-		case "!": return "pling";
-		case "$": return "dollar";
-		case "^": return "acute";
-		case "*": return "star";
-		case "+": return "plus";
-		case "=": return "equals";
-		case "{": return "curly";
-		case "<": return "angle";
-		case "~": return "tilde";
-	}
-	return "chord-sheet-quoted";
-}
