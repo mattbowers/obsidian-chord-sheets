@@ -16,6 +16,11 @@ const customChordTypes: CustomChordType[] = [
 		name: "suspended four sharp five",
 		intervals: ["1P", "4P", "5A"],
 		aliases: ["sus4#5", "4(5+)"]
+	},
+	{
+		name: "major add four",
+		intervals: ["1P", "3M", "4P", "5P"],
+		aliases: ["add4", "(add4)"]
 	}
 ];
 
