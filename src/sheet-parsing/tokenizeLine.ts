@@ -113,8 +113,9 @@ export function tokenizeLine(line: string, lineIndex: number, chordLineMarker: s
 		wordOrRhythm: /^[[\]/|%.]+/d,
 
 		// Any text that isn't whitespace or starting with [ could be chord symbols.
+		// Exclude bar lines to allow tight spacing, but we can't exclude slash because it is valid in a chord
 		// Interpretation depends on line context.
-		wordOrChord: /^[^\s[]+/d,
+		wordOrChord: /^[^|\s[]+/d,
 
 		// Record whitespace so that the input can be exactly recreated in the reading
 		// view markdown post processor
