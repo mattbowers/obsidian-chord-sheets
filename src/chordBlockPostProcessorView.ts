@@ -27,6 +27,13 @@ function processDirectionOpening(value: string) {
 		return value;
 	}
 
+function processRhythmMarker(value: string) {
+	switch (value) {
+		case "~": return "-";
+	}
+	return value;
+}
+
 export class ChordBlockPostProcessorView extends MarkdownRenderChild {
 	source: string;
 
@@ -184,7 +191,7 @@ export class ChordBlockPostProcessorView extends MarkdownRenderChild {
 				} else if (highlightRhythmMarkers && isRhythmToken(token)) {
 					lineDiv.createSpan({
 						cls: `chord-sheet-rhythm-marker`,
-						text: token.value
+						text: processRhythmMarker(token.value),
 					});
 				} else if (isMarkerToken(token)) {
 					lineDiv.createSpan({

@@ -83,7 +83,7 @@ export function tokenizeLine(line: string, lineIndex: number, chordLineMarker: s
 		break: /^---$/d,
 
 		// Match for quoted label using identical symbols pairs (lazy matching syntax to avoid nested quotes)
-		quoted: /^(?<open>['_!$^*+=~])(?<text>[^\1]+?)(?<close>\1)/d,
+		quoted: /^(?<open>['_!$^*+=])(?<text>[^\1]+?)(?<close>\1)/d,
 
 		// Match for ChordPro directives as a special case of quoted token
 		chordProQuoted: /^(?<open>\{[^:]+?:\s*)(?<text>[^}]+?)(?<close>})/d,
@@ -110,12 +110,12 @@ export function tokenizeLine(line: string, lineIndex: number, chordLineMarker: s
 
 		// Possible rhythm markers: bar lines (|), strums (/), repeats (%), etc
 		// Interpretation depends on line context.
-		wordOrRhythm: /^[[\]/|%.]+/d,
+		wordOrRhythm: /^[[\]/|%.~]+/d,
 
 		// Any text that isn't whitespace or starting with [ could be chord symbols.
 		// Exclude bar lines to allow tight spacing, but we can't exclude slash because it is valid in a chord
 		// Interpretation depends on line context.
-		wordOrChord: /^[^|\s[]+/d,
+		wordOrChord: /^[^|~\s[]+/d,
 
 		// Record whitespace so that the input can be exactly recreated in the reading
 		// view markdown post processor
