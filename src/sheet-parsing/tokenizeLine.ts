@@ -394,7 +394,6 @@ function getTypeFromQuote(openingQuote: string, name: string) : string {
 		case "=": return "equals";
 		case "{": return "curly";
 		case "<": return "angle";
-		case "~": return "tilde";
 	}
 	return "unknown";
 }
