@@ -83,7 +83,7 @@ export function tokenizeLine(line: string, lineIndex: number, chordLineMarker: s
 		break: /^---$/d,
 
 		// Match for quoted label using identical symbols pairs (lazy matching syntax to avoid nested quotes)
-		quoted: /^(?<open>['_!$^*+=])(?<text>[^\1]+?)(?<close>\1)/d,
+		quoted: /^(?<open>['_!$&^*+=])(?<text>[^\1]+?)(?<close>\1)/d,
 
 		// Match for ChordPro directives as a special case of quoted token
 		chordProQuoted: /^(?<open>\{[^:]+?:\s*)(?<text>[^}]+?)(?<close>})/d,
@@ -383,17 +383,18 @@ function getTypeFromQuote(openingQuote: string, name: string) : string {
 	}
 
 	switch (openingQuote) {
+		case "^": return "plain";
 		case "'": return "lyric-cue";
 		case "‘": return "lyric-cue";
-		case "_": return "underscore";
-		case "!": return "pling";
-		case "$": return "dollar";
-		case "^": return "acute";
-		case "*": return "star";
-		case "+": return "plus";
-		case "=": return "equals";
-		case "{": return "curly";
-		case "<": return "angle";
+		case "!": return "music-cue";
+		case "_": return "part-1";
+		case "*": return "part-2";
+		case "+": return "part-3";
+		case "&": return "part-4";
+		case "$": return "part-5";
+		case "=": return "rule";
+		case "{": return "lozenge";
+		case "<": return "small";
 	}
 	return "unknown";
 }
