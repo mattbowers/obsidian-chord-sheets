@@ -59,7 +59,8 @@ export default class ChordSheetsPlugin extends Plugin implements IChordSheetsPlu
 						codeblock.parentElement!,
 						instrument as Instrument,
 						this.settings,
-						this
+						this,
+						instrumentString == "continued"
 					));
 				}
 			}

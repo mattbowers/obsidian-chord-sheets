@@ -41,7 +41,8 @@ export class ChordBlockPostProcessorView extends MarkdownRenderChild {
 		containerEl: HTMLElement,
 		private instrument: Instrument,
 		private settings: ChordSheetsSettings,
-		private plugin: ChordSheetsPlugin
+		private plugin: ChordSheetsPlugin,
+		private isContinued: boolean
 	) {
 		super(containerEl);
 	}
@@ -75,7 +76,7 @@ export class ChordBlockPostProcessorView extends MarkdownRenderChild {
 		const codeEl = this.containerEl.createEl("code", {cls: "chord-sheet-chord-block-preview"});
 
 		const songPropertiesSummary = this.plugin.getSongPropertiesSummary();
-		if (songPropertiesSummary.length>0) {
+		if (songPropertiesSummary.length>0 && !this.isContinued) {
 			codeEl.createDiv({ cls: "chord-sheet-properties", text: songPropertiesSummary});
 		}
 
