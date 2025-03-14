@@ -1,0 +1,251 @@
+:root {
+  /* Sizing to fit Samsung A9+ */
+  --chord-sheets-page-height: 1212px;
+  --chord-sheets-font-size: 24px;
+  --chord-sheets-heading-size: 18px;
+}
+
+/* Squeeze out as much screen areas as possible */
+.markdown-preview-view,
+pre {
+  padding: 0 !important;
+  margin: 0 !important;
+}
+pre {
+  padding-left: 2px !important;
+}
+.markdown-preview-view {
+  scrollbar-gutter: auto;
+  scrollbar-width: auto;
+}
+body:not(.native-scrollbars) ::-webkit-scrollbar {
+    width: 0px;
+    height: 0px;
+}
+
+/* Make sure transparent pasted images have a white background so we can see them */
+img {
+  background-color: white;
+}
+
+/* Display summary of properties from frontmatter as lozenge at top-right */
+.chord-sheet-properties {
+  position: absolute;
+  right: 3px;
+  top: 0px;
+  border-radius: 10px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-style: solid;
+  border-width: 1px;
+  font-weight: normal;
+  font-family: var(--font-text);
+  color: var(--text-muted);
+}
+
+/* Set base font across chord sheet */
+code.chord-sheet-chord-block-preview {
+
+    > * {
+        font-size: var(--chord-sheets-font-size);
+        font-weight: normal;
+    }
+}
+/* Background stripes to indicate page boundary */
+.markdown-preview-view pre {
+    background: repeating-linear-gradient(
+      black 0, 
+      black var(--chord-sheets-page-height), 
+      #101010 var(--chord-sheets-page-height), 
+      #101010 calc(var(--chord-sheets-page-height) * 2));
+}
+
+/* Hack min height for chord charts in set lists */
+.markdown-embed-content .markdown-preview-view pre {
+  min-height: var(--chord-sheets-page-height);
+}
+
+/* Optional class for 2-column layout - add in frontmatter to enable*/
+.two-column pre {
+  column-count: 2;
+  column-fill: balance;
+  column-rule: 1px solid #101010;
+  }
+
+.chord-sheet-column-break {
+  break-before: column;
+}
+
+/* Scroll should snap stop on each chords block, including when embedded */
+.markdown-reading-view > .markdown-preview-view  {
+  scroll-snap-type: y mandatory;  
+}
+.markdown-preview-view pre,div.el-h1 {
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+}
+
+/* Hide the brackets surrounding headers in reading view */
+.markdown-reading-view .chord-sheet-section-header-bracket {
+ 	display: none;
+	visibility: collapse;
+}
+/* Section header styling */
+.chord-sheet-section-header,
+.chord-sheet-section-header-content {
+  font-family: var(--font-text);
+  color: var(--section-header-title-color, var(--bold-color));
+  font-weight: bold;
+  font-size: var(--chord-sheets-heading-size);
+  background-color: unset;
+}
+.markdown-reading-view .chord-sheet-section-header-content::after {
+  content: ":";
+}
+
+
+/* Directions */
+.chord-sheet-direction {
+  font-family: var(--font-text);
+}
+.markdown-reading-view .chord-sheet-direction {
+    font-size: 90%
+}
+
+/* Labels */
+
+/* Hide label quotes for everything in reading view */
+.markdown-reading-view span.chord-sheet-quoted-quote {
+	visibility: collapse;
+	display: none;
+}
+
+.chord-sheet-quoted {
+  font-family: var(--font-text);
+  font-size: 90%
+}
+
+.chord-sheet-quoted[type="lyric-cue"] {
+    font-style: italic;
+    color: var(--text-muted);
+
+    /* Un-hide the quote marks */
+    span.chord-sheet-quoted-quote {
+    	visibility: visible;
+	    display: inline;
+    }
+}
+.chord-sheet-quoted[type="music-cue"] {
+    color: #70AD47;
+}
+.chord-sheet-quoted[type="part-1"] {
+    color: #ED7D31;
+}
+.chord-sheet-quoted[type="part-2"] {
+    color: #00B0F0;
+}
+.chord-sheet-quoted[type="part-3"] {
+    color: violet;
+}
+.chord-sheet-quoted[type="part-4"] {
+    color: mediumpurple;
+}
+.chord-sheet-quoted[type="part-5"] {
+    color: turquoise;
+}
+.chord-sheet-quoted[type="plain"] {
+
+}
+.chord-sheet-quoted[type="small"] {
+    font-size: 75%
+}
+.chord-sheet-quoted[type="lozenge"] {
+  border-radius: 10px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-style: solid;
+  border-width: 1px;
+}
+.chord-sheet-quoted[type="rule"] {
+  color: gray;
+  display: block;
+  border-top-style: solid;
+  border-width: 1px;
+  width: 100%;
+  font-weight: bold;
+}
+.chord-sheet-quoted[type="chordpro"] {
+  font-weight: bold;
+}
+
+/*
+    clean-embeds-all.css snippet
+
+    Removes title, link, padding, margins from embeds,
+    so they really look like the same note.
+
+    This will not require a `cssclass` to be set but work for _all_ notes.
+    Derived from the `clean-embeds.css` snippet.
+
+    2021-08-24 Matthias C. Hormann (Moonbase59)
+
+    TODO: Find out how to correct PDF export. L/R margins & vspace too large on embeds.
+*/
+
+/* remove title and the table from the "Metatable" plugin */
+/*.markdown-preview-view .markdown-embed-title,*/
+.markdown-preview-view .obsidian-metatable {
+  display: none;
+}
+
+/*
+  For links to embeds NOT to be shown, uncomment the following
+  and comment out the other section below.
+*/
+
+
+.markdown-preview-view .markdown-embed-link,
+.markdown-preview-view .file-embed-link {
+  display: none;
+}
+
+/* remove border and scroll */
+/* unfortunately needs !important for some themes */
+.markdown-preview-view .markdown-embed,
+.markdown-preview-view .file-embed {
+  border: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+
+}
+
+.markdown-preview-view .markdown-embed-content,
+.markdown-preview-view .markdown-embed-content > .markdown-preview-view { 
+  max-height: unset;
+  padding: 0 !important; /* !important for "Pisum" theme */
+  margin: 0 !important;
+  border: 0 !important;
+}
+
+/* remove <br> between internal embeds */
+.markdown-preview-section div > br {
+  display: none;
+}
+
+
+/* remove vertical space added by markdown-preview-sizer */
+ div.markdown-preview-sizer.markdown-preview-section {
+  min-height: unset !important;
+  padding-bottom: 0 !important;
+}
+
+/* special considerations for printing (PDF export) */
+@media print {
+
+  /* remove frontmatter box if "Show frontmatter" was enabled */
+  /* Also remove metadata table from "Metatable" plugin */
+  pre.frontmatter,
+  .obsidian-metatable {
+    display: none;
+  }
+}
