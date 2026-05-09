@@ -37,7 +37,8 @@ export class ChordBlockPostProcessorView extends MarkdownRenderChild {
 			diagramWidth,
 			highlightChords,
 			highlightSectionHeaders,
-			highlightRhythmMarkers
+			highlightRhythmMarkers,
+			showLineMarkersInReadingMode
 		} = this.settings;
 
 		if (this.containerEl.children.length > 0) {
@@ -140,10 +141,19 @@ export class ChordBlockPostProcessorView extends MarkdownRenderChild {
 						if (trailingSpan) {
 							// fast-forward until the next chord token
 							while (nextToken && !isChordToken(nextToken)) {
-								trailingSpan.createSpan({
-									cls: `chord-sheet-${nextToken.type}`,
-									text: nextToken.value
-								});
+								if (isMarkerToken(nextToken)) {
+									if (showLineMarkersInReadingMode) {
+										trailingSpan.createSpan({
+											cls: `chord-sheet-line-marker`,
+											text: nextToken.value
+										});
+									}
+								} else {
+									trailingSpan.createSpan({
+										cls: `chord-sheet-${nextToken.type}`,
+										text: nextToken.value
+									});
+								}
 								i++;
 								nextToken = tokenizedLine.tokens[i + 1];
 							}
@@ -160,10 +170,12 @@ export class ChordBlockPostProcessorView extends MarkdownRenderChild {
 						text: token.value
 					});
 				} else if (isMarkerToken(token)) {
-					lineDiv.createSpan({
-						cls: `chord-sheet-line-marker`,
-						text: token.value
-					});
+					if (showLineMarkersInReadingMode) {
+						lineDiv.createSpan({
+							cls: `chord-sheet-line-marker`,
+							text: token.value
+						});
+					}
 				} else if (highlightSectionHeaders && isHeaderToken(token)) {
 					lineDiv.addClass("chord-sheet-section-header");
 					const headerSpan = lineDiv.createSpan({
