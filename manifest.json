@@ -7,8 +7,8 @@
 	"authorUrl": "https://github.com/olvidalo",
 	"fundingUrl": {
 		"GitHub Sponsors": "https://github.com/sponsors/olvidalo",
-		"PayPal": "paypal.me/MSchaeben",
-		"Ko-fi": "ko-fi.com/olvidalo"
+		"PayPal": "https://paypal.me/MSchaeben",
+		"Ko-fi": "https://ko-fi.com/olvidalo"
 	},
 	"isDesktopOnly": false,
 	"version": "1.7.0"
