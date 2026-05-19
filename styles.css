@@ -702,20 +702,7 @@ code.chord-sheet-chord-block-preview {
 	top: var(--size-2-1);
 	white-space: normal;
 	font-size: var(--font-ui-small);
-}
 
-.chord-sheet-tools-container.with-chord-overview .chord-sheet-tools {
-	right: var(--size-4-4);
-	top: -4px;
-}
-
-@container (min-width: 400px) {
-	.chord-sheet-tools {
-		position: absolute;
-	}
-}
-
-.chord-sheet-tools {
 	& select, & button {
 		height: calc(var(--input-height) * 0.75);
 		font-size: var(--font-ui-small);
@@ -734,6 +721,17 @@ code.chord-sheet-chord-block-preview {
 		stroke-width: var(--icon-stroke);
 		width: var(--icon-size);
 		pointer-events: none;
+	}
+}
+
+.chord-sheet-tools-container.with-chord-overview .chord-sheet-tools {
+	right: var(--size-4-4);
+	top: -4px;
+}
+
+@container (min-width: 400px) {
+	.chord-sheet-tools {
+		position: absolute;
 	}
 }
 
