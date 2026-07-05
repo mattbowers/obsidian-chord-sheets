@@ -504,6 +504,9 @@ code.chord-sheet-chord-block-preview {
 
 .chord-sheet-section-header {
 	color: var(--section-header-title-color, var(--text-accent));
+}
+
+.cm-s-obsidian .HyperMD-codeblock.chord-sheet-section-header {
 	font-size: var(--section-header-font-size, var(--code-size));
 }
 
