@@ -18,7 +18,7 @@ export class ChordBlockPostProcessorView extends MarkdownRenderChild {
 		super(containerEl);
 	}
 
-	async onload() {
+	onload() {
 
 		const codeEl = this.containerEl.getElementsByTagName("code").item(0);
 		if (codeEl) {

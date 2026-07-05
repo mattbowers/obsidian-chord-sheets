@@ -244,7 +244,7 @@ export class ChordSheetsViewPlugin implements PluginValue {
 
 			if (update.view.viewport.to > parsedUntil.from) {
 				ifDebug(update.state, () => console.log("Out of parse"));
-				setTimeout(() => update.view.dispatch({effects: chordSheetViewportUpdateEffect.of()}));
+				window.setTimeout(() => update.view.dispatch({effects: chordSheetViewportUpdateEffect.of()}));
 
 			}
 

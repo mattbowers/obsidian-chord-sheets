@@ -50,7 +50,7 @@ export default class ChordSheetsPlugin extends Plugin implements IChordSheetsPlu
 					const instrument = instrumentString as Instrument ?? this.settings.defaultInstrument;
 					context.addChild(new ChordBlockPostProcessorView(
 						codeblock.parentElement!,
-						instrument as Instrument,
+						instrument,
 						this.settings
 					));
 				}

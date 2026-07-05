@@ -274,9 +274,7 @@ export function makeChordDiagram(instrument: Instrument, chordToken: ChordToken,
 			positionChooser.append(prevPositionSpan, positionLabelSpan, nextPositionSpan);
 			containerEl.appendChild(positionChooser);
 
-			// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 			const nextPositionButton = positionChooser.querySelector(".chord-sheet-btn-next-position")!;
-			// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 			const prevPositionButton = positionChooser.querySelector(".chord-sheet-btn-prev-position")!;
 
 			nextPositionButton.addEventListener("click", () => {
