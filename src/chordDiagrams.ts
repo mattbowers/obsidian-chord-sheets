@@ -136,10 +136,7 @@ export function renderChordDiagram({containerEl, userDefinedChord, chordDef, num
 
 	box.replaceChildren();
 
-	const chordNameEl = document.createElement("div");
-	chordNameEl.classList.add("chord-sheet-chord-name", "chord-sheet-chord-highlight");
-	chordNameEl.innerText = chordName;
-	box.appendChild(chordNameEl);
+	box.appendChild(makeChordNameEl(chordName));
 
 	const chordDiagram = document.createElement("div");
 	box.appendChild(chordDiagram);
@@ -148,19 +145,46 @@ export function renderChordDiagram({containerEl, userDefinedChord, chordDef, num
 		? userDefinedToVexChord(userDefinedChord, numStrings, numFrets)
 		: dbChordToVexChord(chordDef, position);
 
-	const chordBox = new ChordBox(chordDiagram, {
+	makeChordBox(chordDiagram, numStrings, numFrets, width).draw(vexChord);
+
+	updateChordPosition(containerEl, numPositions, position);
+}
+
+function makeChordNameEl(chordName: string) {
+	const chordNameEl = document.createElement("div");
+	chordNameEl.classList.add("chord-sheet-chord-name", "chord-sheet-chord-highlight");
+	chordNameEl.innerText = chordName;
+	return chordNameEl;
+}
+
+function makeChordBox(containerEl: HTMLElement, numStrings: number, numFrets: number, width: number, defaultColor = "var(--text-normal)") {
+	return new ChordBox(containerEl, {
 		numStrings: numStrings,
 		numFrets: numFrets,
 		showTuning: true,
-		defaultColor: "var(--text-normal)",
+		defaultColor: defaultColor,
 		fontFamily: "var(--font-text)",
 		width: width,
 		height: width * 1.2
 	});
+}
 
-	chordBox.draw(vexChord);
+function renderMissingDiagramNotice(box: HTMLElement, chordName: string, numStrings: number, numFrets: number, width: number) {
+	const emptyFretboardEl = document.createElement("div");
+	emptyFretboardEl.classList.add("chord-sheet-no-diagram");
+	const fretboard = makeChordBox(emptyFretboardEl, numStrings, numFrets, width, "var(--text-faint)");
+	fretboard.draw({chord: [], tuning: new Array(numStrings).fill('')});
 
-	updateChordPosition(containerEl, numPositions, position);
+	const gridCenterX = fretboard.x + fretboard.spacing * (fretboard.numStrings - 1) / 2;
+	const gridCenterY = fretboard.y + fretboard.fretSpacing * fretboard.numFrets / 2;
+	fretboard.canvas.plain("?")
+		.attr({x: gridCenterX, y: gridCenterY})
+		.addClass("chord-sheet-no-diagram-mark");
+
+	emptyFretboardEl.setAttribute("aria-label", `No diagram found for ${chordName}`);
+	emptyFretboardEl.setAttribute("data-tooltip-position", "top");
+
+	box.append(makeChordNameEl(chordName), emptyFretboardEl);
 }
 
 function updateChordPosition(containerEl: HTMLElement, numPositions: number, position: number) {
@@ -214,7 +238,8 @@ export function makeChordDiagram(instrument: Instrument, chordToken: ChordToken,
 	else {
 		const dbChord = findDbChord(chordToken, instrumentChordDb);
 		if (!dbChord) {
-			return;
+			renderMissingDiagramNotice(chordBox, chordToken.chordSymbol.value, numStrings, numFrets, width);
+			return containerEl;
 		}
 
 		let currentPosition = position;
@@ -304,10 +329,7 @@ export function makeChordDiagram(instrument: Instrument, chordToken: ChordToken,
 
 export function makeChordOverview(instrument: Instrument, container: HTMLElement, chordTokens: ChordToken[], width?: number) {
 	for (const chordToken of chordTokens) {
-		const chordBox = makeChordDiagram(instrument, chordToken, width);
-		if (chordBox) {
-			container.appendChild(chordBox);
-		}
+		container.appendChild(makeChordDiagram(instrument, chordToken, width));
 	}
 	container.dataset.chordSequence = chordSequenceString(chordTokens);
 	container.dataset.instrument = instrument;

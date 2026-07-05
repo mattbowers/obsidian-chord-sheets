@@ -496,16 +496,13 @@ code.chord-sheet-chord-block-preview {
 	> * {
 		font-size: var(--code-size);
 	}
-
-	> .chord-sheet-section-header {
-		font-size: var(--section-header-font-size, var(--code-size));
-	}
 }
 
 .chord-sheet-section-header {
 	color: var(--section-header-title-color, var(--text-accent));
 }
 
+code.chord-sheet-chord-block-preview > .chord-sheet-section-header,
 .cm-s-obsidian .HyperMD-codeblock.chord-sheet-section-header {
 	font-size: var(--section-header-font-size, var(--code-size));
 }
@@ -609,6 +606,27 @@ code.chord-sheet-chord-block-preview {
 	color: var(--link-color);
 	text-decoration: var(--link-decoration);
 	cursor: pointer;
+}
+
+.chord-sheet-no-diagram {
+	width: fit-content;
+	margin-inline: auto;
+}
+
+/* dim the empty grid but not the "?" mark */
+.chord-sheet-no-diagram svg > :not(.chord-sheet-no-diagram-mark) {
+	opacity: 0.5;
+}
+
+.chord-sheet-no-diagram-mark {
+	/* centered on the grid point given by the text element's x/y */
+	text-anchor: middle;
+	dominant-baseline: central;
+	fill: var(--text-faint);
+	stroke: none;
+	font-family: var(--font-interface);
+	font-size: 2em;
+	font-weight: 400;
 }
 
 
