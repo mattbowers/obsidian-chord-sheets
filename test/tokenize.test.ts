@@ -273,6 +273,32 @@ describe('Parsing / Tokenization', () => {
 			});
 		});
 
+		test('should handle user-defined chords with non-ASCII symbols (#42)', () => {
+			const line = 'Bø[2|_12x231_] BΔ[x2323x] B♭[x1333x] C#m7(b5)[x123x]';
+			const { tokens } = tokenizeLine(line, lineIndex, chordLineMarker, textLineMarker);
+
+			const chordTokens = tokens.filter(t => isChordToken(t)) as ChordToken[];
+			expect(chordTokens.map(t => t.chordSymbol.value)).toEqual(['Bø', 'BΔ', 'B♭', 'C#m7(b5)']);
+			expect(chordTokens[0]).toMatchObject<ChordTokenWithPartialChord>({
+				range: [0, 14],
+				chord: {
+					userDefinedChord: {
+						frets: '_12x231_',
+						position: 2
+					}
+				},
+				chordSymbol: { value: 'Bø', range: [0, 2] }
+			});
+		});
+
+		test('should not treat bracketed text without valid frets as user-defined chord', () => {
+			const line = 'Test[abc] lyrics';
+			const { tokens, isChordLine } = tokenizeLine(line, lineIndex, chordLineMarker, textLineMarker);
+
+			expect(tokens.filter(t => isChordToken(t))).toHaveLength(0);
+			expect(isChordLine).toBe(false);
+		});
+
 		test('should handle user-defined chords with space-separated multi-digit frets', () => {
 			const line = 'Db[8 10 x 12 12 12] test';
 			const { tokens } = tokenizeLine(line, lineIndex, chordLineMarker, textLineMarker);
