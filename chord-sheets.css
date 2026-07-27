@@ -1,8 +1,35 @@
-:root {
-  /* Sizing to fit Samsung A9+ */
-  --chord-sheets-page-height: 1212px;
-  --chord-sheets-font-size: 24px;
-  --chord-sheets-heading-size: 18px;
+@media screen {
+  :root {
+    /* Sizing to fit Samsung A9+ */
+    --chord-sheets-page-height: 1212px;
+    --chord-sheets-font-size: 24px;
+    --chord-sheets-heading-size: 18px;
+  }
+  
+  .chord-sheet-autoscroll-action {
+    color: yellow;
+    padding-left: 64px;
+    padding-right: 64px;
+    background: grey;
+  }
+  
+  /* Background stripes to indicate page boundary */
+  .markdown-preview-view pre {
+      background: repeating-linear-gradient(
+        black 0, 
+        black var(--chord-sheets-page-height), 
+        #101010 var(--chord-sheets-page-height), 
+        #101010 calc(var(--chord-sheets-page-height) * 2));
+  }
+
+  /* Scroll should snap stop on each chords block, including when embedded */
+  .markdown-reading-view > .markdown-preview-view  {
+    scroll-snap-type: y mandatory;  
+  }
+  .markdown-preview-view pre,div.el-h1 {
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
+  }
 }
 
 /* Squeeze out as much screen areas as possible */
@@ -23,7 +50,7 @@ body:not(.native-scrollbars) ::-webkit-scrollbar {
     height: 0px;
 }
 
-/* Make sure transparent pasted images have a white background so we can see them */
+/* Make sure transparent pasted images have a white background so we can see them and give them 100% width by default*/
 img {
   background-color: white;
 }
@@ -41,6 +68,14 @@ img {
   font-weight: normal;
   font-family: var(--font-text);
   color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* BPM flash icon */
+.chord-sheet-bpm-flash-icon {
+  flex-shrink: 0;
 }
 
 /* Set base font across chord sheet */
@@ -50,14 +85,6 @@ code.chord-sheet-chord-block-preview {
         font-size: var(--chord-sheets-font-size);
         font-weight: normal;
     }
-}
-/* Background stripes to indicate page boundary */
-.markdown-preview-view pre {
-    background: repeating-linear-gradient(
-      black 0, 
-      black var(--chord-sheets-page-height), 
-      #101010 var(--chord-sheets-page-height), 
-      #101010 calc(var(--chord-sheets-page-height) * 2));
 }
 
 /* Hack min height for chord charts in set lists */
@@ -74,15 +101,6 @@ code.chord-sheet-chord-block-preview {
 
 .chord-sheet-column-break {
   break-before: column;
-}
-
-/* Scroll should snap stop on each chords block, including when embedded */
-.markdown-reading-view > .markdown-preview-view  {
-  scroll-snap-type: y mandatory;  
-}
-.markdown-preview-view pre,div.el-h1 {
-  scroll-snap-align: start;
-  scroll-snap-stop: always;
 }
 
 /* Hide the brackets surrounding headers in reading view */
@@ -102,7 +120,6 @@ code.chord-sheet-chord-block-preview {
 .markdown-reading-view .chord-sheet-section-header-content::after {
   content: ":";
 }
-
 
 /* Directions */
 .chord-sheet-direction {
@@ -242,10 +259,120 @@ code.chord-sheet-chord-block-preview {
 /* special considerations for printing (PDF export) */
 @media print {
 
+  :root {
+    /* Sizing to fit A4 equivalent to one screen on A9+ */
+    --chord-sheets-font-size: 22px;
+    --chord-sheets-heading-size: 16.5px;
+  }
+
+
+  h1 {
+    font-size: var(--chord-sheets-heading-size) !important;
+    padding-left: 2px !important;
+  }
+
+  .markdown-preview-view {
+    box-shadow: 0 0 0 100vh var(--background-primary); /*Fill the end of the last page*/      
+    border-radius: 0px;
+  }
+
+  .markdown-preview-view pre {
+    background: var(--background-primary);
+  }
+  
   /* remove frontmatter box if "Show frontmatter" was enabled */
   /* Also remove metadata table from "Metatable" plugin */
   pre.frontmatter,
   .obsidian-metatable {
     display: none;
   }
+
+/*  .chord-sheet-column-break {
+    page-break-before: always;
+  }
+  */
+.chord-sheet-column-break {
+  break-before: column;
+}
+
+    /* Notation font support */
+  span.chord-sheet-notation {
+  	font-family: "MusGlyphs-Text", sans-serif !important;
+  	font-feature-settings: "liga" 1, "clig" 1, "dlig" 1, "hlig" 1;
+  	font-variant-ligatures: common-ligatures discretionary-ligatures historical-ligatures contextual;
+  	line-height: 1.5;
+  	display: inline-block;
+  	min-width: .7em;
+  	font-weight: lighter;
+  	font-size: 100%;
+  }
+
+  /* Hide the brackets surrounding headers in reading view */
+  .chord-sheet-section-header-bracket {
+   	display: none;
+  	visibility: collapse;
+  }
+  /* Section header styling */
+  .chord-sheet-section-header,
+  .chord-sheet-section-header-content {
+    font-family: var(--font-text) !important;
+    color: var(--section-header-title-color, var(--bold-color)) !important;
+    font-weight: bold !important;
+    font-size: var(--chord-sheets-heading-size) !important;
+    background-color: unset;
+  }
+  .chord-sheet-section-header-content::after {
+    content: ":";
+  }
+   
+  /* Directions */
+  .chord-sheet-direction {
+      font-size: 90%
+  }
+
+  /* Labels */
+  
+  /* Hide label quotes for everything in reading view */
+  span.chord-sheet-quoted-quote {
+  	visibility: collapse;
+  	display: none;
+  }
+  
+    /* Display inline chords over lyrics */
+  
+   div.chord-sheet-inline-over-lyrics {
+  	display: flex;
+  	align-items: flex-end;
+  	flex-wrap: wrap;
+  
+  	.chord-sheet-chord {
+  		margin-inline-end: 1ch;
+  	}
+  }
+  
+  div.chord-sheet-inline-over-lyrics .chord-sheet-chord-text-pair {
+  	display: inline-flex;
+  	flex-direction: column;
+  	align-items: flex-start;
+  	justify-content: end;
+  
+  	/* prevent wrapping of inline chord at the end of a line without trailing spaces */
+  	.chord-sheet-inline-chord-trailing-text:empty:after {
+  		content: " ";
+  	}
+  }
+  
+  /* collapse empty lyric line for lines with only inline chords */
+   div.chord-sheet-inline-over-lyrics:not(:has(.chord-sheet-word)) .chord-sheet-inline-chord-trailing-text {
+  	height: 0;
+  	:after {
+  		content: none;
+  	}
+  }
+  
+   div.chord-sheet-inline-over-lyrics .chord-sheet-inline-chord-bracket {
+  	display: none;
+  }
+
+  
 }
