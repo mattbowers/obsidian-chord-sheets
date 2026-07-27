@@ -31,7 +31,7 @@ The plugin auto-detects chord and lyric lines. If it fails, add `%c` at the end 
 ### 🎼 Chord Diagrams
 
 Show chord diagrams on hover or on top of a chord block. Provides alternative fingerings for each chord. Diagrams are
-rendered locally, no API calls to an external service required.
+rendered locally, no API calls to an external service are required.
 
 ![diagram-popups.gif](docs/diagram-popups.gif)
 
@@ -40,11 +40,11 @@ rendered locally, no API calls to an external service required.
 ### 🔨 Custom Chord Shapes
 
 Define your own chord shapes using brackets: `Bbadd13[x13333]`, `Dm6[4|x2x132]` (with capo), or `C°[x34_242_]`
-(with barre).
+(with barre). For frets higher up the neck, separate with spaces or commas: `C*[0 10 10 12 8 8]`, `C*[0,10,10,12,8,8]`.
 
 ### 🎸 Choose Your Instrument
 
-Includes chord diagrams for guitar, ukulele and mandolin. The instrument can be set globally or specified per chord block.
+Includes chord diagrams for guitar, ukulele, and mandolin. The instrument can be set globally or specified per chord block.
 
 ![change-instrument.gif](docs/change-instrument.gif)
 
@@ -73,7 +73,7 @@ automatically as you adjust the speed.
 
 ### 🌈 Uses Theme Colors
 
-| Minimal dark                               | Minimal light                                 | AnuPpuccin light                                  |
+| Minimal dark                               | Minimal light                                  | AnuPpuccin light                                     |
 |--------------------------------------------|------------------------------------------------|------------------------------------------------------|
 | ![minimal-dark.png](docs/minimal-dark.png) | ![minimal-bright.png](docs/minimal-bright.png) | ![anuppuccin-bright.png](docs/anuppuccin-bright.png) |
 
@@ -99,7 +99,7 @@ there which brings up the keyboard. Prefer _reading_ mode on mobile.
 * Turn chord or section header **highlighting** on or off 
 * Hide certain **UI elements** (instrument and transpose controls, chord diagrams, autoscroll button) for _edit / live preview_ mode, _reading_ mode, or both. 
 * Adjust **chord diagram size** and the **default instrument** 
-* Customize the block **"language" specifier** (e.g. start a chord block with ```` ```tab````  instead of ```` ```chords````) and the **line markers** (e.g. `[c]` instead of `%c`)
+* Customize the block **"language" specifier** (e.g., start a chord block with ```` ```tab````  instead of ```` ```chords````) and the **line markers** (e.g. `[c]` instead of `%c`)
 * Integrates with [Style Settings](https://github.com/mgmeyers/obsidian-style-settings) for fine-grained customization of colors and styles
 
 ## Development
@@ -112,7 +112,7 @@ This repo contains **run / debug configurations** for JetBrains IDEs (such as We
 need to adapt the _Run Obsidian_ configuration to the path of your Obsidian installation and set the 
 working directory to the path where you cloned this repo.
 
-To start a development and debug session with supports for breakpoints etc.:
+To start a development and debug session with support for breakpoints etc.:
 
 1. Run the **Run Obsidian** configuration in **debug** mode. This will start Obsidian with the `--remote-debugging-port=9222` parameter which enables
 Chrome remote debugging on port 9222.
@@ -128,7 +128,7 @@ Chrome remote debugging on port 9222.
 This plugin uses:
 
 - [Vexchords](https://github.com/0xfe/vexchords) for rendering chord diagrams.
-- [tonal](https://github.com/tonaljs/tonal) for parsing chord symbols, chord normalization and transposition.
+- [tonal](https://github.com/tonaljs/tonal) for parsing chord symbols, chord normalization, and transposition.
 - [chords-db](https://github.com/tombatossals/chords-db) for ukulele and guitar fingerings.
 
 ## Inspiration / Alternatives

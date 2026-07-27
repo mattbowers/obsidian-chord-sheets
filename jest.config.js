@@ -5,7 +5,7 @@ module.exports = {
 		"^.+.[tj]sx?$": ["ts-jest"],
 	},
 	transformIgnorePatterns: [
-		'node_modules/(?!(escape-string-regexp)/)'
+		'node_modules/(?!(escape-string-regexp|@tombatossals/chords-db)/)'
 	],
 	testMatch: ['**/test/**/*.test.ts']
 };

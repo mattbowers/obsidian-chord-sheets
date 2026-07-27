@@ -166,6 +166,28 @@ export class ChordSheetsSettingTab extends PluginSettingTab {
 				})
 			);
 
+		const showLineMarkersDescFrag = createFragment();
+		const showLineMarkersDescEl = showLineMarkersDescFrag.createSpan();
+		showLineMarkersDescEl.append(
+			`Show line markers (e.g. `,
+			createEl("code", { text: "%c" }),
+			`, `,
+			createEl("code", { text: "%t" }),
+			`) in reading mode. When off, markers are still parsed but hidden from the rendered output.`
+		);
+		showLineMarkersDescFrag.appendChild(showLineMarkersDescEl);
+
+		new Setting(containerEl)
+			.setName('Show line markers in reading mode')
+			.setDesc(showLineMarkersDescFrag)
+			.addToggle(toggle => toggle
+				.setValue(this.plugin.settings.showLineMarkersInReadingMode)
+				.onChange(async (value) => {
+					this.plugin.settings.showLineMarkersInReadingMode = value;
+					await this.plugin.saveSettings();
+					this.plugin.applyNewSettingsToEditors();
+				}));
+
 
 		new Setting(containerEl).setName('Live preview / edit mode').setHeading();
 

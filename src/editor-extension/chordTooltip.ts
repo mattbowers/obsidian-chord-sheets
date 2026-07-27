@@ -24,11 +24,7 @@ export class ChordTooltip {
 	}
 
 	show(target: HTMLElement, instrument: Instrument, chordToken: ChordToken, diagramWidth: number): void { // Replace `any` with the correct type for `vexChord`
-		const chordBox = makeChordDiagram(instrument, chordToken, diagramWidth);
-		if (!chordBox) {
-			return;
-		}
-		this.popper.appendChild(chordBox);
+		this.popper.appendChild(makeChordDiagram(instrument, chordToken, diagramWidth));
 
 		if (this.instance) {
 			this.instance.setProps({
