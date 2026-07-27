@@ -458,6 +458,54 @@ describe('Parsing / Tokenization', () => {
 
 			expect(result.tokens.filter(t => t.type === 'rhythm')).toHaveLength(0);
 		});
+
+		test('should tokenize tilde (~) as passing chord marker', () => {
+			const line = 'C ~ F';
+			const { tokens } = tokenizeLine(line, lineIndex, chordLineMarker, textLineMarker);
+			const rhythmTokens = tokens.filter(t => t.type === 'rhythm') as RhythmToken[];
+			
+			expect(rhythmTokens).toHaveLength(1);
+			expect(rhythmTokens[0]).toMatchObject<Partial<RhythmToken>>({
+				type: 'rhythm',
+				value: '~'
+			});
+		});
+
+		test('should handle multiple tildes as passing chords', () => {
+			const line = 'Am ~ ~ ~ C';
+			const tokens = tokenizeLine(line, lineIndex, chordLineMarker, textLineMarker)
+				.tokens
+				.filter(t => t.type !== 'whitespace');
+			
+			expect(tokens).toHaveLength(5);
+			expect(tokens).toMatchObject<Partial<RhythmToken | ChordToken>[]>([
+				{ type: 'chord', value: 'Am' },
+				{ type: 'rhythm', value: '~' },
+				{ type: 'rhythm', value: '~' },
+				{ type: 'rhythm', value: '~' },
+				{ type: 'chord', value: 'C' }
+			]);
+		});
+
+		test('should handle tildes mixed with other rhythm patterns', () => {
+			const line = '| G ~ ~ F | ~ ~ |';
+			const tokens = tokenizeLine(line, lineIndex, chordLineMarker, textLineMarker)
+				.tokens
+				.filter(t => t.type !== 'whitespace');
+			
+			const rhythmTokens = tokens.filter(t => t.type === 'rhythm') as RhythmToken[];
+			
+			expect(rhythmTokens).toHaveLength(7);
+			expect(rhythmTokens).toMatchObject<Partial<RhythmToken>[]>([
+				{ value: '|' },
+				{ value: '~' },
+				{ value: '~' },
+				{ value: '|' },
+				{ value: '~' },
+				{ value: '~' },
+				{ value: '|' }
+			]);
+		});
 	});
 
 	describe('should detect chord line / text lines', () => {
