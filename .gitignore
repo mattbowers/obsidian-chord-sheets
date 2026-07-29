@@ -24,3 +24,6 @@ data.json
 # Local install helpers
 install.sh
 install-live.sh
+
+# Local development marker
+.hotreload
