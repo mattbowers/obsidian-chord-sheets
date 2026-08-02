@@ -26,7 +26,7 @@ import {enharmonicToggle, transpose} from "./chordProcessing";
 const AUTOSCROLL_SPEED_PROPERTY = "autoscroll-speed";
 
 export default class ChordSheetsPlugin extends Plugin implements IChordSheetsPlugin {
-	settings: ChordSheetsSettings;
+	declare settings: ChordSheetsSettings;
 	editorPlugin: ViewPlugin<ChordSheetsViewPlugin>;
 	editorExtension: Extension[] | null;
 
