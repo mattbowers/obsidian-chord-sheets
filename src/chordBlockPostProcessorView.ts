@@ -211,11 +211,9 @@ export class ChordBlockPostProcessorView extends MarkdownRenderChild {
 	}
 
 	private attachChordDiagram(token: ChordToken, tokenEl: HTMLElement) {
-		const popper = document.createElement("div");
+		const popper = createDiv({cls: "chord-sheet-chord-popup"});
 		const { instrument, settings } = this;
 		const { diagramWidth } = settings;
-
-		popper.classList.add("chord-sheet-chord-popup");
 
 		// noinspection JSUnusedGlobalSymbols
 		tippy(tokenEl, {

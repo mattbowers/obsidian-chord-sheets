@@ -56,13 +56,8 @@ export class ChordOverviewWidget extends WidgetType {
 	}
 
 	toDOM(view: EditorView): HTMLElement {
-		const el = Object.assign(document.createElement("div"), {
-			className: "chord-sheet-chord-overview-container"
-		});
-		const chordOverviewEl = Object.assign(document.createElement("div"), {
-			className: "chord-sheet-chord-overview chord-sheet-preview-mode"
-		});
-		el.append(chordOverviewEl);
+		const el = createDiv({cls: "chord-sheet-chord-overview-container"});
+		const chordOverviewEl = el.createDiv({cls: ["chord-sheet-chord-overview", "chord-sheet-preview-mode"]});
 
 		this.updateChordOverview(chordOverviewEl);
 		view.requestMeasure();

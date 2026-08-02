@@ -10,10 +10,7 @@ class ChordSheetDebugMarker extends GutterMarker {
 	}
 
 	toDOM() {
-		const el = document.createElement("div");
-		el.addClass(this.cls);
-		el.innerText = this.cls;
-		return el;
+		return createDiv({cls: this.cls, text: this.cls});
 	}
 }
 
@@ -23,9 +20,7 @@ export const debugExtensions = [
 			pos,
 			above: true,
 			create() {
-				const dom = document.createElement("div");
-				dom.textContent = `${pos}`;
-				return {dom};
+				return {dom: createDiv({text: `${pos}`})};
 			}
 		};
 	}, {hoverTime: 0}),

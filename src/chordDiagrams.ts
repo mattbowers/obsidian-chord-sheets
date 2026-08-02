@@ -129,17 +129,16 @@ export function renderChordDiagram({containerEl, userDefinedChord, chordDef, num
 	chordName: string,
 	width: number
 }) {
-	const box = containerEl.querySelector(".chord-sheet-chord-box");
+	const box = containerEl.querySelector<HTMLElement>(".chord-sheet-chord-box");
 	if (!box) {
 		return;
 	}
 
 	box.replaceChildren();
 
-	box.appendChild(makeChordNameEl(chordName));
+	makeChordNameEl(box, chordName);
 
-	const chordDiagram = document.createElement("div");
-	box.appendChild(chordDiagram);
+	const chordDiagram = box.createDiv();
 
 	const vexChord = userDefinedChord
 		? userDefinedToVexChord(userDefinedChord, numStrings, numFrets)
@@ -150,11 +149,8 @@ export function renderChordDiagram({containerEl, userDefinedChord, chordDef, num
 	updateChordPosition(containerEl, numPositions, position);
 }
 
-function makeChordNameEl(chordName: string) {
-	const chordNameEl = document.createElement("div");
-	chordNameEl.classList.add("chord-sheet-chord-name", "chord-sheet-chord-highlight");
-	chordNameEl.innerText = chordName;
-	return chordNameEl;
+function makeChordNameEl(parent: HTMLElement, chordName: string) {
+	return parent.createDiv({cls: ["chord-sheet-chord-name", "chord-sheet-chord-highlight"], text: chordName});
 }
 
 function makeChordBox(containerEl: HTMLElement, numStrings: number, numFrets: number, width: number, defaultColor = "var(--text-normal)") {
@@ -170,8 +166,7 @@ function makeChordBox(containerEl: HTMLElement, numStrings: number, numFrets: nu
 }
 
 function renderMissingDiagramNotice(box: HTMLElement, chordName: string, numStrings: number, numFrets: number, width: number) {
-	const emptyFretboardEl = document.createElement("div");
-	emptyFretboardEl.classList.add("chord-sheet-no-diagram");
+	const emptyFretboardEl = createDiv({cls: "chord-sheet-no-diagram"});
 	const fretboard = makeChordBox(emptyFretboardEl, numStrings, numFrets, width, "var(--text-faint)");
 	fretboard.draw({chord: [], tuning: new Array(numStrings).fill('')});
 
@@ -184,7 +179,8 @@ function renderMissingDiagramNotice(box: HTMLElement, chordName: string, numStri
 	emptyFretboardEl.setAttribute("aria-label", `No diagram found for ${chordName}`);
 	emptyFretboardEl.setAttribute("data-tooltip-position", "top");
 
-	box.append(makeChordNameEl(chordName), emptyFretboardEl);
+	makeChordNameEl(box, chordName);
+	box.appendChild(emptyFretboardEl);
 }
 
 function updateChordPosition(containerEl: HTMLElement, numPositions: number, position: number) {
@@ -209,11 +205,8 @@ function updateChordPosition(containerEl: HTMLElement, numPositions: number, pos
 }
 
 export function makeChordDiagram(instrument: Instrument, chordToken: ChordToken, width = 100, position = 0) {
-	const containerEl = document.createElement("div");
-	containerEl.addClass("chord-sheet-chord-diagram");
-	const chordBox: HTMLDivElement = document.createElement('div');
-	chordBox.addClass("chord-sheet-chord-box");
-	containerEl.appendChild(chordBox);
+	const containerEl = createDiv({cls: "chord-sheet-chord-diagram"});
+	const chordBox = containerEl.createDiv({cls: "chord-sheet-chord-box"});
 
 	const instrumentChordDb = ChordsDB[instrument];
 	const numStrings = instrumentChordDb.main.strings;
@@ -245,37 +238,15 @@ export function makeChordDiagram(instrument: Instrument, chordToken: ChordToken,
 		let currentPosition = position;
 		const numPositions = dbChord.positions.length;
 		if (numPositions > 0) {
-			const positionChooser = Object.assign(document.createElement('div'), {
-				className: "chord-sheet-position-chooser"
-			});
+			const positionChooser = containerEl.createDiv({cls: "chord-sheet-position-chooser"});
 
-			const positionLabelSpan = Object.assign(document.createElement('span'), {
-				className: "chord-sheet-position-label",
-			});
+			const prevPositionButton = positionChooser.createSpan({cls: "chord-sheet-btn-prev-position", text: "<"});
 
-			const prevPositionSpan = Object.assign(document.createElement("span"), {
-				className: "chord-sheet-btn-prev-position",
-				textContent: "<"
-			});
+			const positionLabelSpan = positionChooser.createSpan({cls: "chord-sheet-position-label"});
+			positionLabelSpan.createSpan({cls: "chord-sheet-position"});
+			positionLabelSpan.createSpan({text: `/${numPositions}`});
 
-			const positionSpan = Object.assign(document.createElement("span"), {
-				className: "chord-sheet-position"
-			});
-			const numPositionSpan = Object.assign(document.createElement("span"), {
-				textContent: `/${numPositions}`
-			});
-			positionLabelSpan.append(positionSpan, numPositionSpan);
-
-			const nextPositionSpan = Object.assign(document.createElement("span"), {
-				className: "chord-sheet-btn-next-position",
-				textContent: ">"
-			});
-
-			positionChooser.append(prevPositionSpan, positionLabelSpan, nextPositionSpan);
-			containerEl.appendChild(positionChooser);
-
-			const nextPositionButton = positionChooser.querySelector(".chord-sheet-btn-next-position")!;
-			const prevPositionButton = positionChooser.querySelector(".chord-sheet-btn-prev-position")!;
+			const nextPositionButton = positionChooser.createSpan({cls: "chord-sheet-btn-next-position", text: ">"});
 
 			nextPositionButton.addEventListener("click", () => {
 				if (currentPosition < numPositions - 1) {
