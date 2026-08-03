@@ -1,5 +1,4 @@
 import {App, debounce, PluginSettingTab, Setting, TextComponent} from "obsidian";
-import {Instrument} from "./chordsUtils";
 import {AUTOSCROLL_STEPS} from "./autoscrollControl";
 import {
 	ChordSheetsSettings,
@@ -11,6 +10,8 @@ import {
 	ShowChordOverviewSetting
 } from "./chordSheetsSettings";
 import {IChordSheetsPlugin} from "./chordSheetsPluginInterface";
+import {Instrument} from "./instruments/types";
+import {instrumentLabels, instruments} from "./instruments/instruments";
 
 export class ChordSheetsSettingTab extends PluginSettingTab {
 	plugin: IChordSheetsPlugin;
@@ -87,18 +88,20 @@ export class ChordSheetsSettingTab extends PluginSettingTab {
 		new Setting(containerEl)
 			.setName('Default instrument')
 			.setDesc(defaultInstrumentDescFrag)
-			.addDropdown(dropdown => dropdown
-				.addOption("guitar", "Guitar")
-				.addOption("ukulele", "Ukulele")
-				.addOption("ukulele-d-tuning", "Ukulele (D tuning)")
-				.addOption("ukulele-baritone", "Ukulele (Baritone)")
-				.addOption("mandolin", "Mandolin")
-				.setValue(this.plugin.settings.defaultInstrument)
-				.onChange(async (value: Instrument) => {
-					this.plugin.settings.defaultInstrument = value;
-					await this.plugin.saveSettings();
-					this.plugin.applyNewSettingsToEditors();
-				}));
+			.addDropdown(dropdown => {
+
+				for (const instrument of instruments) {
+					dropdown.addOption(instrument, instrumentLabels[instrument]);
+				}
+
+				return dropdown
+					.setValue(this.plugin.settings.defaultInstrument)
+					.onChange(async (value: Instrument) => {
+						this.plugin.settings.defaultInstrument = value;
+						await this.plugin.saveSettings();
+						this.plugin.applyNewSettingsToEditors();
+					});
+			});
 
 
 		new Setting(containerEl).setName('Highlighting').setHeading();

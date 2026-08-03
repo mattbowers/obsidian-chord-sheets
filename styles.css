@@ -576,7 +576,7 @@ code.chord-sheet-chord-block-preview > .chord-sheet-section-header,
 
 
 /* Chord Boxes */
-.chord-sheet-chord-box svg {
+.chord-sheet-chord-container svg {
 	margin-top: -10%;
 	margin-bottom: -5%;
 }

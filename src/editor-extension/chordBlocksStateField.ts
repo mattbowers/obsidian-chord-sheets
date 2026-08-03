@@ -1,4 +1,3 @@
-import {Instrument} from "../chordsUtils";
 import {Decoration, DecorationSet, EditorView, ViewUpdate} from "@codemirror/view";
 import {
 	Compartment,
@@ -18,10 +17,11 @@ import {Tree} from "@lezer/common";
 import {ChordSheetsSettings} from "../chordSheetsSettings";
 import {ChordOverviewWidget} from "./chordOverviewWidget";
 import {ChordBlockToolsWidget} from "./chordBlockToolsWidget";
-import ChordsDB from "@tombatossals/chords-db";
 
 import {ChordToken, isChordToken, isHeaderToken, isMarkerToken, isRhythmToken, Token} from "../sheet-parsing/tokens";
 import {tokenizeLine} from "../sheet-parsing/tokenizeLine";
+import {Instrument} from "../instruments/types";
+import {instruments} from "../instruments/instruments";
 
 class ParsedUntilRangeValue extends RangeValue {
 	endSide = -1;
@@ -470,7 +470,7 @@ function parseChordBlocks(state: EditorState, from: number, to: number, parseCho
 					const chordBlockStartMatch = line.text.match(`^(?:~{3,}|\`{3,})(${settings.blockLanguageSpecifier})\\b-?(.*)`);
 					if (chordBlockStartMatch) {
 						if (chordBlockStartMatch[2]) {
-							if (!Object.keys(ChordsDB).includes(chordBlockStartMatch[2])) {
+							if (!(instruments as string[]).includes(chordBlockStartMatch[2])) {
 								console.error(`Unknown instrument: ${chordBlockStartMatch[2]}`);
 								return false;
 							}

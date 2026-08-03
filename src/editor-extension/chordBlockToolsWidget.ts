@@ -1,7 +1,8 @@
 import {EditorView, WidgetType} from "@codemirror/view";
-import {Instrument} from "../chordsUtils";
 import {chordBlocksStateField} from "./chordBlocksStateField";
 import {setIcon, setTooltip} from "obsidian";
+import {Instrument} from "../instruments/types";
+import {instrumentLabels} from "../instruments/instruments";
 
 export interface InstrumentChangeEventDetail {
 	selectedInstrument: string
@@ -100,13 +101,13 @@ export class ChordBlockToolsWidget extends WidgetType {
 			option.selected = this.instrument === instrument;
 		};
 
-		instrumentOption("guitar", "Guitar");
-		instrumentOption("ukulele", "Ukulele");
-		instrumentOption("mandolin", "Mandolin");
+		instrumentOption("guitar", instrumentLabels["guitar"]);
+		instrumentOption("ukulele", instrumentLabels["ukulele"]);
+		instrumentOption("mandolin", instrumentLabels["mandolin"]);
 
 		el.createEl("hr");
-		instrumentOption("ukulele-d-tuning", "Ukulele (D tuning)");
-		instrumentOption("ukulele-baritone", "Ukulele (Baritone)");
+		instrumentOption("ukulele-d-tuning", instrumentLabels["ukulele-d-tuning"]);
+		instrumentOption("ukulele-baritone", instrumentLabels["ukulele-baritone"]);
 
 
 		el.addEventListener("change", (event) => {
