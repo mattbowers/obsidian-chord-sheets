@@ -1,7 +1,7 @@
 {
 	"id": "chord-sheets-mb",
 	"name": "Chord Sheets MB",
-	"minAppVersion": "0.15.0",
+	"minAppVersion": "1.5.7",
 	"description": "My customised version of Marcel Schaeben original Chord Sheets plugin",
 	"author": "Matt Bowers",
 	"authorUrl": "https://github.com/mattbowers",

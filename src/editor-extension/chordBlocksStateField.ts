@@ -36,6 +36,19 @@ class ParsedUntilRangeValue extends RangeValue {
 	point = true;
 }
 
+/**
+ * Shape of the custom `spec` we attach to the chord/line decorations created in this module.
+ * CodeMirror types `Decoration.spec` as `any`, so this helper gives us a typed view of it.
+ */
+export interface ChordDecoSpec {
+	type?: string;
+	token?: Token;
+}
+
+export function chordDecoSpec(deco: { spec: unknown }): ChordDecoSpec {
+	return deco.spec as ChordDecoSpec;
+}
+
 export interface IChordBlockRangeValue {
 	instrument: Instrument
 	partiallyParsed: boolean
@@ -97,7 +110,7 @@ function shouldShowChordOverviewInEditor(stateOrConfig: EditorState | ChordSheet
 function initializeChordBlocksState(state: EditorState): ChordBlocksState {
 	if (state.doc.length === 0) {
 		return {
-			ranges: RangeSet.empty,
+			ranges: RangeSet.empty as RangeSet<ChordBlockRangeValue>,
 			blockDecos: Decoration.none,
 			chordDecos: Decoration.none,
 			parsedUntil: new ParsedUntilRangeValue().range(0),
@@ -163,7 +176,7 @@ export const chordBlocksStateField = StateField.define<ChordBlocksState>({
 				if (effect.is(chordSheetViewportUpdateEffect)) {
 					const config = tr.state.facet(chordSheetsConfigFacet);
 					const parseFrom = danglingBlockDef !== null ? Math.min(parsedUntil.from + 1, danglingBlockDef.from) : parsedUntil.from + 1;
-					ifDebug(tr.state, () => console.log("Update viewport in state field from: ", parseFrom));
+					ifDebug(tr.state, () => console.debug("Update viewport in state field from: ", parseFrom));
 					const greedyParsing = shouldShowChordOverviewInEditor(config);
 					const newBlocks = parseChordBlocks(tr.state, parseFrom, tr.state.doc.length, true, danglingBlockDef, false, greedyParsing);
 					if (newBlocks.chordBlockRanges.length > 0) {
@@ -242,7 +255,7 @@ function updateChordBlocks({changes, state}: Pick<ViewUpdate & Transaction, 'cha
 	const settings = state.facet(chordSheetsConfigFacet);
 
 	let {ranges, chordDecos, parsedUntil, danglingBlockDef} = value;
-	ifDebug(state, () => console.log("updateChordBlocks called"));
+	ifDebug(state, () => console.debug("updateChordBlocks called"));
 
 	// map old ranges and decorations to accommodate changes
 	ranges = ranges.map(changes);
@@ -368,7 +381,7 @@ function updateChordBlocks({changes, state}: Pick<ViewUpdate & Transaction, 'cha
 		});
 	});
 
-	ifDebug(state, () => console.log({
+	ifDebug(state, () => console.debug({
 		"Removed lines": removedLines.map(line => line.number),
 		"Added lines": addedLines.map(line => line.number),
 		"Changed lines": Array.from(changedChordBlockLineNumbers.values())
@@ -392,8 +405,9 @@ function getChordBlockDecos(config: ChordSheetsSettings, chordBlockRanges: Range
 		while (chordBlockIter.value) {
 			const chordTokens: ChordToken[] = [];
 			chordDecoRanges.between(chordBlockIter.from, chordBlockIter.to, (_from, _to, value) => {
-				if (value.spec.type === "chord") {
-					chordTokens.push(value.spec.token);
+				const spec = chordDecoSpec(value);
+				if (spec.type === "chord" && isChordToken(spec.token)) {
+					chordTokens.push(spec.token);
 				}
 			});
 
@@ -447,7 +461,7 @@ function getChordBlockDecos(config: ChordSheetsSettings, chordBlockRanges: Range
 function parseChordBlocks(state: EditorState, from: number, to: number, parseChords: true, openBlockFrom: OpenBlockDef | null, stopAfterFirstBlock: boolean, greedy: boolean): ChordBlocksParseResult<true>;
 function parseChordBlocks(state: EditorState, from: number, to: number, parseChords: false, openBlockFrom: OpenBlockDef | null, stopAfterFirstBlock: boolean, greedy: boolean): ChordBlocksParseResult<false>;
 function parseChordBlocks(state: EditorState, from: number, to: number, parseChords = true, openBlockFrom: OpenBlockDef | null = null, stopAfterFirstBlock = false, greedy = false): ChordBlocksParseResult<boolean> {
-	ifDebug(state, () => console.log("parseChordBlocks", {from, to, parseChords, openBlockFrom}));
+	ifDebug(state, () => console.debug("parseChordBlocks", {from, to, parseChords, openBlockFrom}));
 	const chordBlockRanges: Range<ChordBlockRangeValue>[] = [];
 	const chordDecos: Range<Decoration>[] = [];
 	const settings = state.facet(chordSheetsConfigFacet);
@@ -527,7 +541,7 @@ function parseChordBlocks(state: EditorState, from: number, to: number, parseCho
 		const parseMs = 1;
 		const parseTimeout = 500;
 		while (currentBlockStart !== null && currentTreeLength != state.doc.length && triedMs <= parseTimeout) {
-			ifDebug(state, () => console.log(`Parse forward: ${currentTreeLength + 100}`));
+			ifDebug(state, () => console.debug(`Parse forward: ${currentTreeLength + 100}`));
 			tree = ensureSyntaxTree(state, Math.min(currentTreeLength + 100, state.doc.length), parseMs);
 			triedMs += parseMs;
 			if (tree) {
@@ -536,8 +550,8 @@ function parseChordBlocks(state: EditorState, from: number, to: number, parseCho
 			}
 			if (currentBlockStart === null) {
 				ifDebug(state, () => {
-					console.log("🎉 found end!: " + chordBlockRanges.last()?.to);
-					console.log({currentRealTreeLength: syntaxTree(state).length});
+					console.debug("🎉 found end!: " + chordBlockRanges.last()?.to);
+					console.debug({currentRealTreeLength: syntaxTree(state).length});
 				});
 			}
 		}
@@ -548,9 +562,9 @@ function parseChordBlocks(state: EditorState, from: number, to: number, parseCho
 	// block is still open, so parsing stopped in the middle of a block or block is unclosed
 	if (currentBlockStart !== null) {
 		if (greedy) {
-			ifDebug(state, () => console.log(`Could not find end of block starting at ${currentBlockStart} before timeout.`));
+			ifDebug(state, () => console.debug(`Could not find end of block starting at ${currentBlockStart} before timeout.`));
 		}
-		ifDebug(state, () => console.log(`Dangling block at ${currentBlockStart}`));
+		ifDebug(state, () => console.debug(`Dangling block at ${currentBlockStart}`));
 		danglingBlock = new ChordBlockRangeValue(instrument, true).range(currentBlockStart, currentTreeLength);
 		chordBlockRanges.push(danglingBlock);
 	}
@@ -662,7 +676,7 @@ function chordDecosForLine(line: Line, {
 			const [labelStart, labelEnd] = token.range;
 			const [startTagStart, startTagEnd] = resolveIndex(token.openingQuote.range, token);
 			const [labelNameStart, labelNameEnd] = resolveIndex(token.quotedText.range, token);
-			const [endTagStart, endTagEnd] = resolveIndex(token.closingQuote.range, token);
+			const [endTagStart] = resolveIndex(token.closingQuote.range, token);
 
 			chordDecos.push(
 				Decoration

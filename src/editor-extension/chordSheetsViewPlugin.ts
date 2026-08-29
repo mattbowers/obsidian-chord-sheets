@@ -6,6 +6,7 @@ import {ChangeSet, ChangeSpec} from "@codemirror/state";
 import {
 	ChordBlocksState,
 	chordBlocksStateField,
+	chordDecoSpec,
 	chordSheetsConfig,
 	chordSheetsConfigFacet,
 	chordSheetViewportUpdateEffect,
@@ -45,7 +46,7 @@ export const chordSheetEditorPlugin = () => ViewPlugin.fromClass(ChordSheetsView
 	eventHandlers: {
 		click: function (event: MouseEvent, view: EditorView) {
 			const target = event.target as HTMLElement;
-			ifDebug(view.state, () => console.log(view.posAtDOM(target)));
+			ifDebug(view.state, () => console.debug(view.posAtDOM(target)));
 			if (target.nodeName === "BUTTON" && target.classList.contains("chord-sheet-transpose")) {
 				event.stopPropagation();
 				const pos = view.posAtDOM(target);
@@ -95,14 +96,15 @@ export const chordSheetEditorPlugin = () => ViewPlugin.fromClass(ChordSheetsView
 			let isOverEl = false;
 			if (pos) {
 				view.state.field(chordBlocksStateField).chordDecos.between(pos, pos, (_from, _to, deco) => {
-					if (!deco.spec.token) {
+					const spec = chordDecoSpec(deco);
+					if (!spec.token) {
 						return;
 					}
 
 					if (this.currentDeco != deco) {
 						this.tooltip.hide();
-						if (isChordToken(deco.spec.token)) {
-							const chordToken: ChordToken = deco.spec.token;
+						if (isChordToken(spec.token)) {
+							const chordToken: ChordToken = spec.token;
 							const dom = view.domAtPos(pos);
 							let el = dom.node.parentElement;
 							while (el && !el.classList.contains("chord-sheet-chord")) {
@@ -213,8 +215,9 @@ export class ChordSheetsViewPlugin implements PluginValue {
 		}
 
 		chordBlocksState.chordDecos.between(blockDef.from, chordBlockEnd, (from, _to, value) => {
-			if (value.spec.type === "chord") {
-				const chordToken = value.spec.token as ChordToken;
+			const spec = chordDecoSpec(value);
+			if (spec.type === "chord" && isChordToken(spec.token)) {
+				const chordToken = spec.token;
 				chordRanges.push({
 					from: from + chordToken.chordSymbol.range[0],
 					to: from + chordToken.chordSymbol.range[1],
@@ -240,10 +243,10 @@ export class ChordSheetsViewPlugin implements PluginValue {
 
 		if (update.viewportChanged) {
 			const {parsedUntil} = update.state.field(chordBlocksStateField);
-			ifDebug(update.state, () => console.log("Viewport to: " + update.view.viewport.to, "parsedUntil", parsedUntil.from));
+			ifDebug(update.state, () => console.debug("Viewport to: " + update.view.viewport.to, "parsedUntil", parsedUntil.from));
 
 			if (update.view.viewport.to > parsedUntil.from) {
-				ifDebug(update.state, () => console.log("Out of parse"));
+				ifDebug(update.state, () => console.debug("Out of parse"));
 				window.setTimeout(() => update.view.dispatch({effects: chordSheetViewportUpdateEffect.of()}));
 
 			}

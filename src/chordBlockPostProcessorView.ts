@@ -318,48 +318,18 @@ export class ChordBlockPostProcessorView extends MarkdownRenderChild {
 		if (!file) {
 			return null;
 		}
-		const tempoValue = this.plugin.app.metadataCache.getFileCache(file)?.frontmatter?.["tempo"];
-		const tempoNumber = parseInt(tempoValue);
+		const tempoValue: unknown = this.plugin.app.metadataCache.getFileCache(file)?.frontmatter?.["tempo"];
+		const tempoNumber = parseInt(String(tempoValue), 10);
 		return tempoNumber && !isNaN(tempoNumber) && tempoNumber > 0 ? tempoNumber : null;
 	}
 
 	private addBPMFlashIcon(containerEl: HTMLElement, bpm: number) {
 		const icon = containerEl.createSpan({
-			cls: "chord-sheet-bpm-flash-icon",
+			cls: ["chord-sheet-bpm-flash-icon", "is-flashing"],
 		});
-		
+
 		const beatDurationMs = (60 / bpm) * 1000;
-		const animationDuration = `${beatDurationMs}ms`;
-		
-		const style = document.createElement("style");
-		const uniqueId = `bpm-flash-${Math.random().toString(36).substr(2, 9)}`;
-		icon.classList.add(uniqueId);
-		
-		style.textContent = `
-			@keyframes ${uniqueId}-flash {
-				0%, 50% { 
-					background-color: #ff4444;
-					box-shadow: 0 0 10px #ff4444;
-				}
-				51%, 100% { 
-					background-color: #330000;
-					box-shadow: 0 0 1px #330000;
-				}
-			}
-			.${uniqueId} {
-				animation: ${animationDuration} ${uniqueId}-flash linear infinite;
-				display: inline-block;
-				width: 12px;
-				height: 12px;
-				border-radius: 50%;
-				background-color: #ff4444;
-				box-shadow: 0 0 10px #ff4444;
-				margin-left: 8px;
-				border: 1px solid #660000;
-			}
-		`;
-		
-		document.head.appendChild(style);
+		icon.style.setProperty("--bpm-flash-duration", `${beatDurationMs}ms`);
 	}
 
 	private attachChordDiagram(token: ChordToken, tokenEl: HTMLElement) {

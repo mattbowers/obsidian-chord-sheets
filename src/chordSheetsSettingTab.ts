@@ -72,7 +72,6 @@ export class ChordSheetsSettingTab extends PluginSettingTab {
 			.addSlider(slider => slider
 				.setLimits(50, 150, 1)
 				.setValue(this.plugin.settings.diagramWidth)
-				.setDynamicTooltip()
 				.onChange(value => debouncedChangeDiagramSize(value)));
 
 		const defaultInstrumentDescFrag = createFragment();
@@ -235,7 +234,6 @@ export class ChordSheetsSettingTab extends PluginSettingTab {
 			.addSlider(slider => slider
 				.setLimits(1, AUTOSCROLL_STEPS, 1)
 				.setValue(this.plugin.settings.autoscrollDefaultSpeed)
-				.setDynamicTooltip()
 				.onChange(async value => {
 					this.plugin.settings.autoscrollDefaultSpeed = value;
 					await this.plugin.saveSettings();

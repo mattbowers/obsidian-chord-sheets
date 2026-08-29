@@ -26,13 +26,23 @@ export default defineConfig([
 			"@typescript-eslint/no-unused-vars": ["error", {args: "all", argsIgnorePattern: "_.*"}],
 			"no-prototype-builtins": "off",
 			"@typescript-eslint/no-empty-function": "off",
-			"semi": ["warn", "always"]
+			"semi": ["warn", "always"],
+			// The settings tab embeds chord-notation and code examples (`[Verse 1]`,
+			// `| C C/B | Am C/G |`, `autoscroll-speed`, `a-z`) inside <code> nodes and
+			// setting descriptions, where forced lower-casing is wrong or meaningless.
+			"obsidianmd/ui/sentence-case": "off"
 		}
 	},
 	{
 		files: ["test/**/*.ts"],
 		languageOptions: {
 			globals: {...globals.jest}
+		},
+		rules: {
+			// Test fixtures lean on Jest matchers like `expect.any()` that are typed as `any`.
+			"@typescript-eslint/no-unsafe-assignment": "off",
+			"@typescript-eslint/no-unsafe-member-access": "off",
+			"@typescript-eslint/no-unsafe-argument": "off"
 		}
 	}
 ]);

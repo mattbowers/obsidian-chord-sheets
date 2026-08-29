@@ -94,7 +94,7 @@ export function tokenizeLine(line: string, lineIndex: number, chordLineMarker: s
 		angleQuoted: /^(?<open><)(?<text>[^>]+?)(?<close>>)/d,
 
 		// Match for embed
-		embed:  /^!\[\[(?<src>[^\[|]+)(?:(?:\|(?<width>\d+))(?:x(?<height>\d+))?)?]]/d,
+		embed:  /^!\[\[(?<src>[^[|]+)(?:(?:\|(?<width>\d+))(?:x(?<height>\d+))?)?]]/d,
 
 		// Match for inline header
 		inlineHeader: /^(?<name>[^:]+)(?<close>:)/d,

@@ -56,7 +56,7 @@ export default class ChordSheetsPlugin extends Plugin implements IChordSheetsPlu
 					const instrument = instrumentString as Instrument ?? this.settings.defaultInstrument;
 					context.addChild(new ChordBlockPostProcessorView(
 						codeblock.parentElement!,
-						instrument as Instrument,
+						instrument,
 						this.settings,
 						this,
 						instrumentString == "continued"
@@ -280,7 +280,7 @@ export default class ChordSheetsPlugin extends Plugin implements IChordSheetsPlu
 			}
 
 			if (!checking) {
-				chordPlugin.getChordSymbolRangesForBlock(chordSheetBlockAtCursor).then(
+				void chordPlugin.getChordSymbolRangesForBlock(chordSheetBlockAtCursor).then(
 					chordTokens => this.transpose(chordTokens, editorView, direction)
 				);
 			}
@@ -299,7 +299,7 @@ export default class ChordSheetsPlugin extends Plugin implements IChordSheetsPlu
 			}
 
 			if (!checking) {
-				chordPlugin.getChordSymbolRangesForBlock(chordSheetBlockAtCursor).then(
+				void chordPlugin.getChordSymbolRangesForBlock(chordSheetBlockAtCursor).then(
 					chordTokens => this.enharmonicToggle(chordTokens, editorView)
 				);
 			}
@@ -407,8 +407,8 @@ export default class ChordSheetsPlugin extends Plugin implements IChordSheetsPlu
 		if (!file) {
 			return null;
 		}
-		const frontmatterSpeedValue = this.app.metadataCache.getFileCache(file)?.frontmatter?.[AUTOSCROLL_SPEED_PROPERTY];
-		const frontmatterSpeedNumber = parseInt(frontmatterSpeedValue);
+		const frontmatterSpeedValue: unknown = this.app.metadataCache.getFileCache(file)?.frontmatter?.[AUTOSCROLL_SPEED_PROPERTY];
+		const frontmatterSpeedNumber = parseInt(String(frontmatterSpeedValue), 10);
 		return frontmatterSpeedNumber && !isNaN(frontmatterSpeedNumber)
 			? frontmatterSpeedNumber
 			: null;
@@ -427,8 +427,10 @@ export default class ChordSheetsPlugin extends Plugin implements IChordSheetsPlu
 		if (!chordBlockFile) {
 			return;
 		}
-		const propValue : string = this.app.metadataCache.getFileCache(chordBlockFile)?.frontmatter?.[name];
-		if (propValue) { array.push(prefix+propValue+suffix); }
+		const propValue: unknown = this.app.metadataCache.getFileCache(chordBlockFile)?.frontmatter?.[name];
+		if (typeof propValue === "string" || typeof propValue === "number") {
+			array.push(prefix + propValue + suffix);
+		}
 	}
 
 	private getSongPropertiesFromFrontmatter(chordBlockFile : TFile): string {
@@ -481,11 +483,11 @@ export default class ChordSheetsPlugin extends Plugin implements IChordSheetsPlu
 	}
 
 	private saveAutoscrollSpeed(file: TFile, newSpeed: number) {
-		this.app.fileManager.processFrontMatter(file, frontmatter => {
+		void this.app.fileManager.processFrontMatter(file, (frontmatter: Record<string, unknown>) => {
 			frontmatter[AUTOSCROLL_SPEED_PROPERTY] = this.getMetadataType(AUTOSCROLL_SPEED_PROPERTY) === "number"
 				? newSpeed
 				: newSpeed.toString();
-		}).then();
+		});
 	}
 
 	stopAllAutoscrolls() {
@@ -521,7 +523,7 @@ export default class ChordSheetsPlugin extends Plugin implements IChordSheetsPlu
 	}
 
 	async loadSettings() {
-		this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData());
+		this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData() as Partial<ChordSheetsSettings>);
 	}
 
 	async saveSettings() {
