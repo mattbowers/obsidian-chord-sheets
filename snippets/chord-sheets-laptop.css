@@ -1,0 +1,206 @@
+@media screen {
+  :root {
+    /* To suit ASUS */
+    --chord-sheets-page-height: 1212px;
+    --chord-sheets-font-size: 16px;
+    --chord-sheets-heading-size: 12px;
+
+  }
+  
+  .chord-sheet-autoscroll-action {
+    color: yellow;
+    padding-left: 64px;
+    padding-right: 64px;
+    background: grey;
+  }
+  
+  /* Overflow warning: a red fade in the bottom-right corner (nearest the hidden
+     columns) when a chord sheet spills past its columns. The overflow is now
+     horizontally scrollable. */
+  
+  .markdown-preview-view pre {
+      overflow-x: auto;
+      overflow-y: hidden;
+
+      background-color: black;
+      background-image:
+        /* cover: opaque strip matching the page background, full height, pinned to
+           the right edge of the CONTENT (background-attachment: local) - masks the
+           warning fade while the sheet fits, slides off as it overflows right. */
+        linear-gradient(black, black),
+        /* warning: red fade in the bottom-right corner, pinned to the VIEWPORT
+           (background-attachment: scroll). */
+        radial-gradient(farthest-side at 100% 100%,
+          rgba(220, 60, 60, 0.65), rgba(220, 60, 60, 0));
+      background-position: 100% 0, 100% 100%;
+      background-size: 3em 100%, 3em 3em;
+      background-repeat: no-repeat;
+      background-attachment: local, scroll;
+  }
+
+}
+
+
+/* Squeeze out as much screen areas as possible */
+.markdown-preview-view,
+pre {
+  padding: 0 !important;
+  margin: 0 !important;
+}
+pre {
+  padding-left: 2px !important;
+}
+.markdown-preview-view {
+  scrollbar-gutter: auto;
+  scrollbar-width: auto;
+}
+body:not(.native-scrollbars) ::-webkit-scrollbar {
+    width: 0px;
+    height: 0px;
+}
+
+/* Make sure transparent pasted images have a white background so we can see them and give them 100% width by default*/
+img {
+  background-color: white;
+}
+
+/* Display summary of properties from frontmatter as lozenge at top-right */
+.chord-sheet-properties {
+  position: absolute;
+  right: 3px;
+  top: 0px;
+  border-radius: 10px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-style: solid;
+  border-width: 1px;
+  font-weight: normal;
+  font-family: var(--font-text);
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Set base font across chord sheet */
+code.chord-sheet-chord-block-preview {
+
+    > * {
+        font-size: var(--chord-sheets-font-size);
+        font-weight: normal;
+    }
+
+
+}
+
+/* Set-up 2-page spread for landscape display */
+.markdown-preview-view pre {
+  column-count: 2;
+  column-fill: auto;
+  column-rule: 1px solid #101010;
+  height: 770px;
+}
+
+/* Optional class for 2-column layout - add in frontmatter to enable*/
+.two-column pre {
+  column-count: 4;
+  column-fill: auto;
+  column-rule: 1px solid #101010;
+  }
+
+.chord-sheet-column-break {
+  break-before: column;
+}
+
+/* Hide the brackets surrounding headers in reading view */
+.markdown-reading-view .chord-sheet-section-header-bracket {
+ 	display: none;
+	visibility: collapse;
+}
+/* Section header styling */
+.chord-sheet-section-header,
+.chord-sheet-section-header-content {
+  font-family: var(--font-text);
+  color: var(--section-header-title-color, var(--bold-color));
+  font-weight: bold;
+  font-size: var(--chord-sheets-heading-size);
+  background-color: unset;
+}
+.markdown-reading-view .chord-sheet-section-header-content::after {
+  content: ":";
+}
+
+/* Directions */
+.chord-sheet-direction {
+  font-family: var(--font-text);
+}
+.markdown-reading-view .chord-sheet-direction {
+    font-size: 90%
+}
+
+/* Labels */
+
+/* Hide label quotes for everything in reading view */
+.markdown-reading-view span.chord-sheet-quoted-quote {
+	visibility: collapse;
+	display: none;
+}
+
+.chord-sheet-quoted {
+  font-family: var(--font-text);
+  font-size: 90%
+}
+
+.chord-sheet-quoted[type="lyric-cue"] {
+    font-style: italic;
+    color: var(--text-muted);
+
+    /* Un-hide the quote marks */
+    span.chord-sheet-quoted-quote {
+    	visibility: visible;
+	    display: inline;
+    }
+}
+.chord-sheet-quoted[type="music-cue"] {
+    color: #70AD47;
+}
+.chord-sheet-quoted[type="part-1"] {
+    color: #ED7D31;
+}
+.chord-sheet-quoted[type="part-2"] {
+    color: #00B0F0;
+}
+.chord-sheet-quoted[type="part-3"] {
+    color: violet;
+}
+.chord-sheet-quoted[type="part-4"] {
+    color: mediumpurple;
+}
+.chord-sheet-quoted[type="part-5"] {
+    color: turquoise;
+}
+.chord-sheet-quoted[type="plain"] {
+
+}
+.chord-sheet-quoted[type="small"] {
+    font-size: 75%
+}
+.chord-sheet-quoted[type="lozenge"] {
+  border-radius: 10px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-style: solid;
+  border-width: 1px;
+}
+.chord-sheet-quoted[type="rule"] {
+  color: gray;
+  display: block;
+  border-top-style: solid;
+  border-width: 1px;
+  width: 100%;
+  font-weight: bold;
+}
+.chord-sheet-quoted[type="chordpro"] {
+  font-weight: bold;
+}
+
