@@ -85,7 +85,7 @@ img {
   background-color: white;
 }
 
-.chord-sheet-hearer { font-size: var(--chord-sheets-font-size); }
+.chord-sheet-header { font-size: var(--chord-sheets-font-size); }
 
 /* Frontmatter properties: a pill on the right of the song-title header bar.
    Placement/flex is handled by the plugin's .chord-sheet-header rules. */
