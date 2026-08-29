@@ -74,11 +74,6 @@ img {
   gap: 8px;
 }
 
-/* BPM flash icon */
-.chord-sheet-bpm-flash-icon {
-  flex-shrink: 0;
-}
-
 /* Set base font across chord sheet */
 code.chord-sheet-chord-block-preview {
 

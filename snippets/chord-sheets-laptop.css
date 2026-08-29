@@ -1,10 +1,9 @@
 @media screen {
   :root {
-    /* To suit ASUS */
-    --chord-sheets-page-height: 1212px;
-    --chord-sheets-font-size: 16px;
+    /* To suit ASUS USB monitor*/
+    --chord-sheets-page-height: 800px;
+    --chord-sheets-font-size: 17.3px;
     --chord-sheets-heading-size: 12px;
-
   }
   
   .chord-sheet-autoscroll-action {
@@ -13,29 +12,31 @@
     padding-right: 64px;
     background: grey;
   }
-  
+
   /* Overflow warning: a red fade in the bottom-right corner (nearest the hidden
      columns) when a chord sheet spills past its columns. The overflow is now
      horizontally scrollable. */
-  
+  /* cover: opaque strip matching the page background, full height, pinned to
+     the right edge of the CONTENT (background-attachment: local) - masks the
+     warning fade while the sheet fits, slides off as it overflows right. */
+  /* warning: red fade in the bottom-right corner, pinned to the VIEWPORT
+     (background-attachment: scroll). */
+
   .markdown-preview-view pre {
       overflow-x: auto;
       overflow-y: hidden;
 
       background-color: black;
       background-image:
-        /* cover: opaque strip matching the page background, full height, pinned to
-           the right edge of the CONTENT (background-attachment: local) - masks the
-           warning fade while the sheet fits, slides off as it overflows right. */
         linear-gradient(black, black),
-        /* warning: red fade in the bottom-right corner, pinned to the VIEWPORT
-           (background-attachment: scroll). */
         radial-gradient(farthest-side at 100% 100%,
           rgba(220, 60, 60, 0.65), rgba(220, 60, 60, 0));
       background-position: 100% 0, 100% 100%;
       background-size: 3em 100%, 3em 3em;
       background-repeat: no-repeat;
       background-attachment: local, scroll;
+
+      min-height: var(--chord-sheets-page-height);
   }
 
 }
@@ -57,6 +58,13 @@ pre {
 body:not(.native-scrollbars) ::-webkit-scrollbar {
     width: 0px;
     height: 0px;
+}
+
+
+/* remove vertical space added by markdown-preview-sizer */
+ div.markdown-preview-sizer.markdown-preview-section {
+  min-height: unset !important;
+  padding-bottom: 0 !important;
 }
 
 /* Make sure transparent pasted images have a white background so we can see them and give them 100% width by default*/
@@ -82,6 +90,7 @@ img {
   gap: 8px;
 }
 
+
 /* Set base font across chord sheet */
 code.chord-sheet-chord-block-preview {
 
@@ -98,7 +107,7 @@ code.chord-sheet-chord-block-preview {
   column-count: 2;
   column-fill: auto;
   column-rule: 1px solid #101010;
-  height: 770px;
+  height: var(--chord-sheets-page-height);
 }
 
 /* Optional class for 2-column layout - add in frontmatter to enable*/
