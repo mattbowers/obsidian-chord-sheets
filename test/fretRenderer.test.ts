@@ -1,5 +1,5 @@
 import ChordsDB from "@tombatossals/chords-db";
-import {dbChordToVexChord, userDefinedToVexChord} from "../src/chordDiagrams";
+import {dbChordToVexChord, userDefinedToVexChord} from "../src/instruments/fretRenderer";
 
 function findChord(instrument: keyof typeof ChordsDB, key: string, suffix: string) {
 	return ChordsDB[instrument].chords[key].find(chord => chord.suffix === suffix);

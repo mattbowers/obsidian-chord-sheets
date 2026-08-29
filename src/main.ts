@@ -2,7 +2,6 @@
 
 import {addIcon, debounce, Editor, MarkdownFileInfo, MarkdownView, Notice, Plugin, TFile, View} from 'obsidian';
 import {EditorView, ViewPlugin} from "@codemirror/view";
-import {Instrument} from "./chordsUtils";
 import {ChordBlockPostProcessorView} from "./chordBlockPostProcessorView";
 import {ChordSheetsSettings, DEFAULT_SETTINGS} from "./chordSheetsSettings";
 import {Extension} from "@codemirror/state";
@@ -18,10 +17,10 @@ import {AutoscrollControl, SPEED_CHANGED_EVENT} from "./autoscrollControl";
 import {ChordSheetsSettingTab} from "./chordSheetsSettingTab";
 import {IChordSheetsPlugin} from "./chordSheetsPluginInterface";
 import {chordSheetsEditorExtension} from "./editor-extension/chordSheetsEditorExtension";
-import ChordsDB from "@tombatossals/chords-db";
 import {addCustomChordTypes} from "./customChordTypes";
 import {enharmonicToggle, transpose} from "./chordProcessing";
-import {context} from "esbuild";
+import {Instrument} from "./instruments/types";
+import {instruments} from "./instruments/instruments";
 
 
 const AUTOSCROLL_SPEED_PROPERTY = "autoscroll-speed";
@@ -31,7 +30,7 @@ const PATCH_PROPERTY = "patch";
 
 
 export default class ChordSheetsPlugin extends Plugin implements IChordSheetsPlugin {
-	settings: ChordSheetsSettings;
+	declare settings: ChordSheetsSettings;
 	editorPlugin: ViewPlugin<ChordSheetsViewPlugin>;
 	editorExtension: Extension[] | null;
 	songPropertiesSummary = "";
@@ -153,7 +152,7 @@ export default class ChordSheetsPlugin extends Plugin implements IChordSheetsPlu
 			}
 		});
 
-		for (const instrument of Object.keys(ChordsDB) as Instrument[]) {
+		for (const instrument of instruments) {
 			this.addCommand({
 				id: `block-instrument-change-${instrument}`,
 				name: `Change instrument for the current chord block to ${instrument}`,

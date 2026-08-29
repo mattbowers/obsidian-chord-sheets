@@ -146,5 +146,5 @@ describe("Enharmonic toggle", () => {
 	test("should toggle enharmonically, slash chords", () => {
 		expect(enharmonicToggleSheet("C#maj7/D# - A#m7/F# - F#maj7/G# - Fm7/C - A#m7/D# - D#m7/G# - C#maj7/F - C#/G#"))
 			.toEqual("Dbmaj7/Eb - Bbm7/Gb - Gbmaj7/Ab - Fm7/C - Bbm7/Eb - Ebm7/Ab - Dbmaj7/F - Db/Ab");
-	})
-})
+	});
+});

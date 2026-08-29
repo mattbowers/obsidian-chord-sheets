@@ -1,5 +1,5 @@
 import {MarkdownRenderChild, TFile} from "obsidian";
-import {Instrument, uniqueChordTokens} from "./chordsUtils";
+import {uniqueChordTokens} from "./chordsUtils";
 import tippy from "tippy.js/headless";
 import {makeChordDiagram, makeChordOverview} from "./chordDiagrams";
 import {ChordSheetsSettings} from "./chordSheetsSettings";
@@ -16,6 +16,7 @@ import {
 } from "./sheet-parsing/tokens";
 import {tokenizeLine} from "./sheet-parsing/tokenizeLine";
 import ChordSheetsPlugin from "./main";
+import {Instrument} from "./instruments/types";
 
 
 function processDirectionOpening(value: string) {
@@ -47,7 +48,7 @@ export class ChordBlockPostProcessorView extends MarkdownRenderChild {
 		super(containerEl);
 	}
 
-	async onload() {
+	onload() {
 
 		const codeEl = this.containerEl.getElementsByTagName("code").item(0);
 		if (codeEl) {
@@ -362,11 +363,9 @@ export class ChordBlockPostProcessorView extends MarkdownRenderChild {
 	}
 
 	private attachChordDiagram(token: ChordToken, tokenEl: HTMLElement) {
-		const popper = document.createElement("div");
+		const popper = createDiv({cls: "chord-sheet-chord-popup"});
 		const { instrument, settings } = this;
 		const { diagramWidth } = settings;
-
-		popper.classList.add("chord-sheet-chord-popup");
 
 		// noinspection JSUnusedGlobalSymbols
 		tippy(tokenEl, {

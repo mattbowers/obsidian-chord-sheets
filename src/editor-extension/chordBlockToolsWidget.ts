@@ -1,7 +1,8 @@
 import {EditorView, WidgetType} from "@codemirror/view";
-import {Instrument} from "../chordsUtils";
 import {chordBlocksStateField} from "./chordBlocksStateField";
 import {setIcon, setTooltip} from "obsidian";
+import {Instrument} from "../instruments/types";
+import {instrumentLabels} from "../instruments/instruments";
 
 export interface InstrumentChangeEventDetail {
 	selectedInstrument: string
@@ -71,15 +72,12 @@ export class ChordBlockToolsWidget extends WidgetType {
 	}
 
 	toDOM(view: EditorView): HTMLElement {
-		const containerEl = document.createElement("div");
-		containerEl.classList.add("chord-sheet-tools-container");
+		const containerEl = createDiv({cls: "chord-sheet-tools-container"});
 		if (this.chordOverviewVisible) {
 			containerEl.classList.add("with-chord-overview");
 		}
 
-		const el = document.createElement("div");
-		el.classList.add("chord-sheet-tools");
-		containerEl.append(el);
+		containerEl.createDiv({cls: "chord-sheet-tools"});
 
 		if (this.showTransposeControl) {
 			this.createTransposeControl(containerEl);
@@ -96,25 +94,20 @@ export class ChordBlockToolsWidget extends WidgetType {
 	}
 
 	private createInstrumentControl(containerEl: HTMLElement, view: EditorView): void {
-		const el = document.createElement("select");
-		el.classList.add("dropdown", "chord-sheet-instrument-change");
+		const el = createEl("select", {cls: ["dropdown", "chord-sheet-instrument-change"]});
 
 		const instrumentOption = (instrument: Instrument, name: string) => {
-			return Object.assign(document.createElement("option"), {
-				value: instrument,
-				text: name,
-				selected: this.instrument === instrument
-			});
+			const option = el.createEl("option", {value: instrument, text: name});
+			option.selected = this.instrument === instrument;
 		};
 
-		el.append(instrumentOption("guitar", "Guitar"));
-		el.append(instrumentOption("ukulele", "Ukulele"));
-		el.append(instrumentOption("mandolin", "Mandolin"));
+		instrumentOption("guitar", instrumentLabels["guitar"]);
+		instrumentOption("ukulele", instrumentLabels["ukulele"]);
+		instrumentOption("mandolin", instrumentLabels["mandolin"]);
 
-
-		el.append(document.createElement("hr"));
-		el.append(instrumentOption("ukulele-d-tuning", "Ukulele (D tuning)"));
-		el.append(instrumentOption("ukulele-baritone", "Ukulele (Baritone)"));
+		el.createEl("hr");
+		instrumentOption("ukulele-d-tuning", instrumentLabels["ukulele-d-tuning"]);
+		instrumentOption("ukulele-baritone", instrumentLabels["ukulele-baritone"]);
 
 
 		el.addEventListener("change", (event) => {
@@ -138,35 +131,24 @@ export class ChordBlockToolsWidget extends WidgetType {
 	}
 
 	private createTransposeControl(containerEl: HTMLElement): void {
-		const el = Object.assign(document.createElement("div"), {
-			className: 'chord-sheet-transpose-control'
-		});
+		const el = createDiv({cls: 'chord-sheet-transpose-control'});
 
-		const buttonDown = Object.assign(document.createElement('button'), {
-			className: 'chord-sheet-transpose chord-sheet-transpose-down',
-		});
+		const buttonDown = el.createEl("button", {cls: ['chord-sheet-transpose', 'chord-sheet-transpose-down']});
 		setIcon(buttonDown, 'move-down');
 		setTooltip(buttonDown, 'Transpose down');
 
-		const label = Object.assign(document.createElement('span'), {
-			className: 'chord-sheet-transpose-label',
-		});
+		const label = el.createSpan({cls: 'chord-sheet-transpose-label'});
 		setIcon(label, 'music');
 
-		const buttonUp = Object.assign(document.createElement('button'), {
-			className: 'chord-sheet-transpose chord-sheet-transpose-up',
-		});
+		const buttonUp = el.createEl("button", {cls: ['chord-sheet-transpose', 'chord-sheet-transpose-up']});
 		setIcon(buttonUp, 'move-up');
 		setTooltip(buttonUp, 'Transpose up');
 
-		el.append(buttonDown, label, buttonUp);
 		containerEl.firstElementChild?.prepend(el);
 	}
 
     private createEnharmonicToggleButton(containerEl: HTMLElement): void {
-		const el = Object.assign(document.createElement("button"), {
-			className: 'chord-sheet-enharmonic-toggle',
-		});
+		const el = createEl("button", {cls: 'chord-sheet-enharmonic-toggle'});
 		setIcon(el, 'enharmonic-toggle');
 		setTooltip(el, 'Enharmonic toggle (# ↔ b)');
 

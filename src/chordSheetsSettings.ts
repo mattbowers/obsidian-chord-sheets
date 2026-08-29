@@ -1,4 +1,4 @@
-import {Instrument} from "./chordsUtils";
+import {Instrument} from "./instruments/types";
 
 export type ShowAutoscrollButtonSetting = "never" | "chord-blocks" | "always";
 export type ShowChordOverviewSetting = "never" | "edit" | "preview" | "always";

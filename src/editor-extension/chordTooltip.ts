@@ -1,8 +1,8 @@
 import tippy, {Instance} from "tippy.js";
-import {Instrument} from "../chordsUtils";
 import {makeChordDiagram} from "../chordDiagrams";
 
 import {ChordToken} from "../sheet-parsing/tokens";
+import {Instrument} from "../instruments/types";
 
 export class ChordTooltip {
 	private readonly instance: Instance | null = null;
