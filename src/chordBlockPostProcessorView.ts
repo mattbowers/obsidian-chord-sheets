@@ -79,18 +79,25 @@ export class ChordBlockPostProcessorView extends MarkdownRenderChild {
 
 		if (!this.isContinued) {
 			const songTitle = this.plugin.getSongTitle();
-			if (songTitle.length > 0) {
-				codeEl.createDiv({ cls: "chord-sheet-song-title", text: songTitle });
-			}
-		}
+			const songPropertiesSummary = this.plugin.getSongPropertiesSummary();
 
-		const songPropertiesSummary = this.plugin.getSongPropertiesSummary();
-		if (songPropertiesSummary.length>0 && !this.isContinued) {
-			const propertiesDiv = codeEl.createDiv({ cls: "chord-sheet-properties", text: songPropertiesSummary});
-			
-			const tempo = this.getTempo();
-			if (tempo) {
-				this.addBPMFlashIcon(propertiesDiv, tempo);
+			if (songTitle.length > 0 || songPropertiesSummary.length > 0) {
+				// One header bar: title on the left (truncated on collision),
+				// properties aligned right. No floating.
+				const headerEl = codeEl.createDiv({ cls: "chord-sheet-header" });
+
+				if (songTitle.length > 0) {
+					headerEl.createDiv({ cls: "chord-sheet-song-title", text: songTitle });
+				}
+
+				if (songPropertiesSummary.length > 0) {
+					const propertiesDiv = headerEl.createDiv({ cls: "chord-sheet-properties", text: songPropertiesSummary });
+
+					const tempo = this.getTempo();
+					if (tempo) {
+						this.addBPMFlashIcon(propertiesDiv, tempo);
+					}
+				}
 			}
 		}
 
