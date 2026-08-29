@@ -77,6 +77,13 @@ export class ChordBlockPostProcessorView extends MarkdownRenderChild {
 
 		const codeEl = this.containerEl.createEl("code", {cls: "chord-sheet-chord-block-preview"});
 
+		if (!this.isContinued) {
+			const songTitle = this.plugin.getSongTitle();
+			if (songTitle.length > 0) {
+				codeEl.createDiv({ cls: "chord-sheet-song-title", text: songTitle });
+			}
+		}
+
 		const songPropertiesSummary = this.plugin.getSongPropertiesSummary();
 		if (songPropertiesSummary.length>0 && !this.isContinued) {
 			const propertiesDiv = codeEl.createDiv({ cls: "chord-sheet-properties", text: songPropertiesSummary});

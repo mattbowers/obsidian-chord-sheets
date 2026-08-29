@@ -27,6 +27,7 @@ const AUTOSCROLL_SPEED_PROPERTY = "autoscroll-speed";
 const TEMPO_PROPERTY = "tempo";
 const KEY_PROPERTY = "key";
 const PATCH_PROPERTY = "patch";
+const TITLE_PROPERTY = "title";
 
 
 export default class ChordSheetsPlugin extends Plugin implements IChordSheetsPlugin {
@@ -34,6 +35,7 @@ export default class ChordSheetsPlugin extends Plugin implements IChordSheetsPlu
 	editorPlugin: ViewPlugin<ChordSheetsViewPlugin>;
 	editorExtension: Extension[] | null;
 	songPropertiesSummary = "";
+	songTitle = "";
 	viewAutoscrollControlMap = new WeakMap<View, AutoscrollControl>();
 	sourcePath: string;
 
@@ -421,6 +423,18 @@ export default class ChordSheetsPlugin extends Plugin implements IChordSheetsPlu
 		}
 		this.songPropertiesSummary = this.getSongPropertiesFromFrontmatter(chordBlockFile);
 		return this.songPropertiesSummary;
+	}
+
+	getSongTitle() : string {
+		const chordBlockFile = this.app.vault.getAbstractFileByPath(this.sourcePath) as TFile | null;
+		if (!chordBlockFile) {
+			return this.songTitle;
+		}
+		const titleValue: unknown = this.app.metadataCache.getFileCache(chordBlockFile)?.frontmatter?.[TITLE_PROPERTY];
+		this.songTitle = typeof titleValue === "string" || typeof titleValue === "number"
+			? String(titleValue)
+			: chordBlockFile.basename;
+		return this.songTitle;
 	}
 
 	private addSongPropertyFromFrontmatter(array : string[], name : string, chordBlockFile : TFile, prefix : string, suffix : string) {

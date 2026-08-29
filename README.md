@@ -2,6 +2,7 @@ A fork of [Obsidian Chord Sheets](https://github.com/olvidalo/obsidian-chord-she
 
 - Support for inserting musical notation using MusGlyphs font
 - Additional markdown for labels, cues, directions
+- Song title (from the `title` frontmatter property, else the note filename) and properties (`key`, `tempo`, `patch`) shown above the rendered chord block
 
 # Obsidian Chord Sheets
 

@@ -454,6 +454,66 @@ settings:
             - lighter
             - bolder
             - inherit
+
+    ## SONG TITLE
+
+    -
+        id: song-title
+        title: Song title
+        type: heading
+        level: 3
+    -
+        id: song-title-info
+        title: About the song title
+        description: |
+        	The song title is shown at the top of a rendered chord block. It is taken from the note's `title`
+        	frontmatter property, falling back to the note's file name.
+        type: info-text
+        markdown: true
+    -
+        id: song-title-color
+        title: Song title color
+        description: |
+        	Text color for the song title. Defaults to the current theme's 3rd level heading color.
+        type: variable-themed-color
+        format: hex
+        default-light: '#'
+        default-dark: '#'
+    -
+        id: song-title-font
+        title: Song title font
+        description: |
+        	Font family for the song title. Accepts any CSS font-family value or a CSS variable such as
+        	var(--h1-font). Defaults to the current theme's 3rd level heading font.
+        type: variable-text
+        default: ""
+    -
+        id: song-title-font-size
+        title: Song title font size
+        description: |
+        	Font size for the song title. Use a full CSS font size value including units such as 1.3em, 20px or 14pt,
+        	or a CSS variable such as var(--h2-size). Defaults to the current theme's 3rd level heading size.
+        type: variable-text
+        default: ""
+    -
+        id: song-title-font-weight
+        title: Song title font weight
+        description: Font weight for the song title.
+        type: variable-select
+        default: '600'
+        options:
+            - '100'
+            - '200'
+            - '300'
+            - normal
+            - '500'
+            - '600'
+            - bold
+            - '800'
+            - '900'
+            - lighter
+            - bolder
+            - inherit
 */
 
 .chord-sheet-chord-line .chord-sheet-chord {
@@ -960,4 +1020,14 @@ svg.enharmonic-toggle {
 
 .chord-sheet-bpm-flash-icon.is-flashing {
 	animation: var(--bpm-flash-duration, 500ms) chord-sheet-bpm-flash linear infinite;
+}
+
+/* Song title (from the `title` frontmatter property, else the note filename) */
+.chord-sheet-song-title {
+	color: var(--song-title-color, var(--h3-color, var(--text-normal)));
+	font-family: var(--song-title-font, var(--h3-font, inherit));
+	font-size: var(--song-title-font-size, var(--h3-size, 1.3em));
+	font-weight: var(--song-title-font-weight, var(--h3-weight, 600));
+	line-height: var(--h3-line-height, 1.3);
+	margin-bottom: .4em;
 }
