@@ -332,7 +332,7 @@ export class ChordBlockPostProcessorView extends MarkdownRenderChild {
 
 	private addBPMFlashIcon(containerEl: HTMLElement, bpm: number) {
 		const icon = containerEl.createSpan({
-			cls: ["chord-sheet-bpm-flash-icon", "is-flashing"],
+			cls: "chord-sheet-bpm-flash-icon",
 		});
 
 		const beatDurationMs = (60 / bpm) * 1000;
