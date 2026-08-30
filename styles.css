@@ -1001,22 +1001,23 @@ svg.enharmonic-toggle {
 @keyframes chord-sheet-bpm-flash {
 	0% {
 		opacity: 1;
-		box-shadow: 0 0 12px 1px #ff0000;
+		box-shadow: 0 0 1em 0.08em #ff0000;
 	}
 	25%, 100% {
 		opacity: 0.1;
-		box-shadow: 0 0 2px #ff0000;
+		box-shadow: 0 0 0.17em #ff0000;
 	}
 }
 
 .chord-sheet-bpm-flash-icon {
 	display: inline-block;
 	flex: 0 0 auto;
-	width: 12px;
-	height: 12px;
+	/* Size relative to the surrounding header/properties text so it fits the bar */
+	width: 0.85em;
+	height: 0.85em;
 	border-radius: 50%;
 	background-color: #ff0000;
-	box-shadow: 0 0 10px #ff0000;
+	box-shadow: 0 0 0.85em #ff0000;
 	animation: var(--bpm-flash-duration, 500ms) chord-sheet-bpm-flash linear infinite;
 }
 
