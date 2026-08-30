@@ -1,11 +1,31 @@
 @media screen {
   :root {
-    /* To suit ASUS USB monitor*/
-    --chord-sheets-page-height: 800px;
-    --chord-sheets-font-size: 17.3px;
-    --chord-sheets-heading-size: 12px;
+    /* Fluid sizing: adapts to the current viewport instead of being pinned to
+       one monitor. The clamp() bounds keep text readable and the spread intact
+       at extreme window sizes; the middle term is calibrated so a ~1280x800
+       viewport reproduces the old ASUS values (~17.3px). Nudge the slope
+       coefficients if the text feels off on a given screen. */
+    --chord-sheets-font-size: clamp(14px, 0.85vw + 0.8vh, 40px);
+    --chord-sheets-heading-size: calc(var(--chord-sheets-font-size) * 0.7);
+
+    /* Spread height = the REAL reading-pane height (100cqh, measured from the
+       .view-content size container below), minus the in-flow song-title bar.
+       Self-adjusts to fullscreen/windowed, tab bar on/off, split panes and
+       popout windows without any magic pixel offset. Falls back to the small
+       viewport height where no size container is established. Tune the
+       --chord-sheets-header-bar subtraction if the last line clips or a gap
+       shows at the bottom. */
+    --chord-sheets-header-bar: 0rem;
+    --chord-sheets-page-height: calc(100cqh - var(--chord-sheets-header-bar));
   }
-  
+
+  /* Establish .view-content as a size query container so 100cqh above resolves
+     to the actual reading area. Scoped to reading view (where the spread lives)
+     to keep containment off the editor. */
+  .workspace-leaf-content.is-read-mode[data-type='markdown'] .view-content {
+    container: chord-sheet-pane / size;
+  }
+
   .chord-sheet-autoscroll-action {
     color: yellow;
     padding-left: 64px;
