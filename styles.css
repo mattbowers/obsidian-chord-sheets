@@ -1051,3 +1051,60 @@ svg.enharmonic-toggle {
 	align-items: center;
 	gap: .5em;
 }
+
+/* Embedded images inside chord blocks (reading mode). Percentage widths are set
+   inline on the <img>; height follows the natural aspect ratio. */
+.chord-sheet-embed-img {
+	height: auto;
+	max-width: 100%;
+	vertical-align: top;
+}
+
+.chord-sheet-embed-img.chord-sheet-embed-resizable {
+	cursor: pointer;
+}
+
+.chord-sheet-embed-img.is-resizing {
+	cursor: ew-resize;
+	user-select: none;
+}
+
+/* Drag-to-resize overlay, pinned over the image via fixed positioning. */
+.chord-sheet-embed-resize-overlay {
+	position: fixed;
+	z-index: var(--layer-popover, 30);
+	border: 1px solid var(--interactive-accent);
+	pointer-events: none;
+	box-sizing: border-box;
+}
+
+.chord-sheet-embed-resize-handle {
+	position: absolute;
+	width: 10px;
+	height: 10px;
+	background: var(--interactive-accent);
+	border-radius: 2px;
+	pointer-events: all;
+	touch-action: none;
+	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+}
+
+.chord-sheet-embed-resize-handle.mod-nw { top: -5px; left: -5px; cursor: nwse-resize; }
+.chord-sheet-embed-resize-handle.mod-ne { top: -5px; right: -5px; cursor: nesw-resize; }
+.chord-sheet-embed-resize-handle.mod-sw { bottom: -5px; left: -5px; cursor: nesw-resize; }
+.chord-sheet-embed-resize-handle.mod-se { bottom: -5px; right: -5px; cursor: nwse-resize; }
+
+.chord-sheet-embed-resize-readout {
+	position: absolute;
+	top: -1.6em;
+	left: 50%;
+	transform: translateX(-50%);
+	padding: 1px 6px;
+	border-radius: 4px;
+	background: var(--interactive-accent);
+	color: var(--text-on-accent);
+	font-size: 12px;
+	line-height: 1.3;
+	white-space: nowrap;
+	pointer-events: none;
+}

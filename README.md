@@ -72,6 +72,24 @@ use the `Save current autoscroll speed` command to add it with the last used spe
 automatically as you adjust the speed.
 
 
+### 🖼️ Embedded Images
+
+Embed an image inside a chord block with Obsidian's wikilink syntax:
+
+```
+![[diagram.png]]
+![[diagram.png|300]]        pixel width (optionally |300x200)
+![[diagram.png|50%]]        width as a percentage of the container
+```
+
+Images render in reading mode. When *Enable image resize handles* is on
+(Settings → Chord Sheets → Reading mode), drag the corner handles of an image to
+resize it — the new width is written back to the note as a percentage, so the
+image scales with the column/viewport. The *Reset embedded image size* command
+removes the size from the embed at the cursor.
+
+Note: images are resolved from the vault's configured attachment folder.
+
 ### 🌈 Uses Theme Colors
 
 | Minimal dark                               | Minimal light                                  | AnuPpuccin light                                     |

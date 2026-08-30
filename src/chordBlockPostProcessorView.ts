@@ -1,5 +1,6 @@
-import {MarkdownRenderChild, TFile} from "obsidian";
+import {MarkdownPostProcessorContext, MarkdownRenderChild, TFile} from "obsidian";
 import {uniqueChordTokens} from "./chordsUtils";
+import {attachImageResizeHandles} from "./imageResizeController";
 import tippy from "tippy.js/headless";
 import {makeChordDiagram, makeChordOverview} from "./chordDiagrams";
 import {ChordSheetsSettings} from "./chordSheetsSettings";
@@ -43,7 +44,8 @@ export class ChordBlockPostProcessorView extends MarkdownRenderChild {
 		private instrument: Instrument,
 		private settings: ChordSheetsSettings,
 		private plugin: ChordSheetsPlugin,
-		private isContinued: boolean
+		private isContinued: boolean,
+		private context?: MarkdownPostProcessorContext
 	) {
 		super(containerEl);
 	}
@@ -105,7 +107,9 @@ export class ChordBlockPostProcessorView extends MarkdownRenderChild {
 		const lines = this.source.split("\n");
 		let currentIndex = 0;
 
-		for (const line of lines) {
+		for (let lineInBlock = 0; lineInBlock < lines.length; lineInBlock++) {
+			const line = lines[lineInBlock];
+			const lineStartIndex = currentIndex;
 			const tokenizedLine = tokenizeLine(line, currentIndex, chordLineMarker, textLineMarker);
 
 			const lineDiv = codeEl.createDiv({
@@ -289,9 +293,34 @@ export class ChordBlockPostProcessorView extends MarkdownRenderChild {
 					const tfile = this.plugin.app.vault.getFileByPath(this.plugin.app.vault.config.attachmentFolderPath + "/" + token.src);
 					if (tfile instanceof TFile) {
 						const src = this.plugin.app.vault.getResourcePath(tfile);
-						const img = embedSpan.createEl("img", {attr: {src: src}});
-						if (token.width > 0) { img.width = token.width; }
-						if (token.height > 0) { img.height = token.height; }
+						const img = embedSpan.createEl("img", {attr: {src: src}, cls: "chord-sheet-embed-img"});
+						if (token.width > 0) {
+							if (token.widthUnit === "%") {
+								img.style.width = `${token.width}%`;
+							} else {
+								img.width = token.width;
+								if (token.height > 0) { img.height = token.height; }
+							}
+						}
+
+						if (this.settings.enableImageResize && this.context) {
+							const context = this.context;
+							const colInLine = token.range[0] - lineStartIndex;
+							attachImageResizeHandles(img, {
+								app: this.plugin.app,
+								file: () => {
+									const file = context.sourcePath
+										? this.plugin.app.vault.getAbstractFileByPath(context.sourcePath)
+										: null;
+									return file instanceof TFile ? file : null;
+								},
+								sectionLineStart: () => context.getSectionInfo(this.containerEl)?.lineStart ?? null,
+								lineInBlock,
+								colInLine,
+								embedText: token.value,
+								minWidthPercent: this.settings.imageResizeMinWidthPercent,
+							});
+						}
 					}
 				} else if (highlightSectionHeaders && isHeaderToken(token)) {
 					lineDiv.addClass("chord-sheet-section-header");

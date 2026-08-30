@@ -18,6 +18,7 @@ import {ChordSheetsSettingTab} from "./chordSheetsSettingTab";
 import {IChordSheetsPlugin} from "./chordSheetsPluginInterface";
 import {chordSheetsEditorExtension} from "./editor-extension/chordSheetsEditorExtension";
 import {addCustomChordTypes} from "./customChordTypes";
+import {stripEmbedSize} from "./imageEmbeds";
 import {enharmonicToggle, transpose} from "./chordProcessing";
 import {Instrument} from "./instruments/types";
 import {instruments} from "./instruments/instruments";
@@ -61,12 +62,29 @@ export default class ChordSheetsPlugin extends Plugin implements IChordSheetsPlu
 						instrument,
 						this.settings,
 						this,
-						instrumentString == "continued"
+						instrumentString == "continued",
+						context
 					));
 				}
 			}
 
 		});
+
+
+		// Suppress Obsidian's "open image in viewer" click for embedded images inside
+		// chord blocks, so a single click can drive the resize handles instead.
+		// Capture phase + stopImmediatePropagation to beat Obsidian's own handler.
+
+		this.registerDomEvent(document, "click", (evt: MouseEvent) => {
+			if (!this.settings.enableImageResize) {
+				return;
+			}
+			const target = evt.target as HTMLElement;
+			if (target.instanceOf(HTMLImageElement) && target.closest(".chord-sheet-embed")) {
+				evt.preventDefault();
+				evt.stopImmediatePropagation();
+			}
+		}, { capture: true });
 
 
 
@@ -183,6 +201,32 @@ export default class ChordSheetsPlugin extends Plugin implements IChordSheetsPlu
 			name: 'Enharmonically toggle chords in current block between sharp (#) and flat (b).',
 			editorCheckCallback: (checking: boolean, editor: Editor) =>
 				this.enharmonicToggleCommand(editor, this.editorPlugin, checking)
+		});
+
+		this.addCommand({
+			id: 'reset-image-size',
+			name: 'Reset embedded image size (at cursor)',
+			editorCheckCallback: (checking: boolean, editor: Editor) => {
+				const cursor = editor.getCursor();
+				const line = editor.getLine(cursor.line);
+				const embedPattern = /!\[\[[^[\]|]+(?:\|\d+(?:%|x\d+)?)?]]/g;
+				let match: RegExpExecArray | null;
+				while ((match = embedPattern.exec(line)) !== null) {
+					const start = match.index;
+					const end = start + match[0].length;
+					if (cursor.ch >= start && cursor.ch <= end) {
+						if (!checking) {
+							editor.replaceRange(
+								stripEmbedSize(match[0]),
+								{ line: cursor.line, ch: start },
+								{ line: cursor.line, ch: end }
+							);
+						}
+						return true;
+					}
+				}
+				return false;
+			}
 		});
 
 		this.addCommand({

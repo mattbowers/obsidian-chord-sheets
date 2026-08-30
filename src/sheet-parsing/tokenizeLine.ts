@@ -93,8 +93,9 @@ export function tokenizeLine(line: string, lineIndex: number, chordLineMarker: s
 		curlyQuoted: /^(?<open>\{)(?<text>[^}]+?)(?<close>})/d,
 		angleQuoted: /^(?<open><)(?<text>[^>]+?)(?<close>>)/d,
 
-		// Match for embed
-		embed:  /^!\[\[(?<src>[^[|]+)(?:(?:\|(?<width>\d+))(?:x(?<height>\d+))?)?]]/d,
+		// Match for embed. Size spec is either a pixel width (optionally `x<height>`)
+		// or a percentage width (`50%`) relative to the container.
+		embed:  /^!\[\[(?<src>[^[|]+)(?:\|(?<width>\d+)(?:(?<pct>%)|x(?<height>\d+))?)?]]/d,
 
 		// Match for inline header
 		inlineHeader: /^(?<name>[^:]+)(?<close>:)/d,
@@ -322,7 +323,7 @@ export function tokenizeLine(line: string, lineIndex: number, chordLineMarker: s
 					}
 					case "embed": {
 						const {
-							src: src, width: width, height: height
+							src: src, width: width, pct: pct, height: height
 						} = match.groups!;
 
 						const embedToken: EmbedToken = {
@@ -331,6 +332,7 @@ export function tokenizeLine(line: string, lineIndex: number, chordLineMarker: s
 							range: offsetRange(matchRange, pos),
 							src: src,
 							width: Number(width),
+							widthUnit: pct ? "%" : "px",
 							height: Number(height)
 						};
 

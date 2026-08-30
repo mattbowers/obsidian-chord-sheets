@@ -28,6 +28,8 @@ export interface ChordSheetsSettings {
 	highlightRhythmMarkers: boolean;
 	displayInlineChordsOverLyrics: boolean;
 	showLineMarkersInReadingMode: boolean;
+	enableImageResize: boolean;
+	imageResizeMinWidthPercent: number;
 }
 
 export const DEFAULT_SETTINGS: ChordSheetsSettings = {
@@ -49,5 +51,7 @@ export const DEFAULT_SETTINGS: ChordSheetsSettings = {
 	highlightSectionHeaders: true,
 	highlightRhythmMarkers: true,
 	displayInlineChordsOverLyrics: false,
-	showLineMarkersInReadingMode: false
+	showLineMarkersInReadingMode: false,
+	enableImageResize: true,
+	imageResizeMinWidthPercent: 10
 };

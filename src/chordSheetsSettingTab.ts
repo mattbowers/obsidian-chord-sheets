@@ -190,6 +190,37 @@ export class ChordSheetsSettingTab extends PluginSettingTab {
 					this.plugin.applyNewSettingsToEditors();
 				}));
 
+		const imageResizeDescFrag = createFragment();
+		imageResizeDescFrag.createSpan().append(
+			`Drag the corner handles of an embedded image (`,
+			createEl("code", { text: "![[image.png]]" }),
+			`) in reading mode to resize it. The width is written back to the note as a percentage (e.g. `,
+			createEl("code", { text: "![[image.png|50%]]" }),
+			`) so the image scales with the container.`
+		);
+
+		new Setting(containerEl)
+			.setName('Enable image resize handles')
+			.setDesc(imageResizeDescFrag)
+			.addToggle(toggle => toggle
+				.setValue(this.plugin.settings.enableImageResize)
+				.onChange(async (value) => {
+					this.plugin.settings.enableImageResize = value;
+					await this.plugin.saveSettings();
+					this.plugin.applyNewSettingsToEditors();
+				}));
+
+		new Setting(containerEl)
+			.setName('Minimum image width')
+			.setDesc('Lower bound when resizing, as a percentage of the container width.')
+			.addSlider(slider => slider
+				.setLimits(5, 100, 5)
+				.setValue(this.plugin.settings.imageResizeMinWidthPercent)
+				.onChange(async value => {
+					this.plugin.settings.imageResizeMinWidthPercent = value;
+					await this.plugin.saveSettings();
+				}));
+
 
 		new Setting(containerEl).setName('Live preview / edit mode').setHeading();
 

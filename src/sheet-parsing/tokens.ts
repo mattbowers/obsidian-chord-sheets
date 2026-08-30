@@ -54,6 +54,7 @@ export interface EmbedToken extends Token {
 	type: 'embed'
 	src: string
 	width: number
+	widthUnit: 'px' | '%'
 	height: number
 }
 export interface BreakToken extends Token {

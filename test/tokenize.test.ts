@@ -1,5 +1,6 @@
 import {
 	ChordToken,
+	EmbedToken,
 	HeaderToken,
 	isChordToken,
 	MarkerToken,
@@ -664,6 +665,53 @@ describe('Parsing / Tokenization', () => {
 			expect(tokens).toHaveLength(1);
 			expect(tokens[0].type).toBe('whitespace');
 			expect(isChordLine).toBe(false);
+		});
+	});
+
+	describe('image embeds', () => {
+		test('should tokenize a plain image embed', () => {
+			const { tokens } = tokenizeLine('![[image.png]]', lineIndex, chordLineMarker, textLineMarker);
+			expect(tokens).toHaveLength(1);
+			expect(tokens[0]).toEqual<EmbedToken>({
+				type: 'embed',
+				value: '![[image.png]]',
+				range: [0, 14],
+				src: 'image.png',
+				width: NaN,
+				widthUnit: 'px',
+				height: NaN
+			});
+		});
+
+		test('should tokenize a pixel width', () => {
+			const { tokens } = tokenizeLine('![[image.png|300]]', lineIndex, chordLineMarker, textLineMarker);
+			expect(tokens[0]).toMatchObject({
+				type: 'embed',
+				src: 'image.png',
+				width: 300,
+				widthUnit: 'px'
+			});
+		});
+
+		test('should tokenize a pixel width and height', () => {
+			const { tokens } = tokenizeLine('![[image.png|300x200]]', lineIndex, chordLineMarker, textLineMarker);
+			expect(tokens[0]).toMatchObject({
+				type: 'embed',
+				src: 'image.png',
+				width: 300,
+				widthUnit: 'px',
+				height: 200
+			});
+		});
+
+		test('should tokenize a percentage width', () => {
+			const { tokens } = tokenizeLine('![[image.png|50%]]', lineIndex, chordLineMarker, textLineMarker);
+			expect(tokens[0]).toMatchObject({
+				type: 'embed',
+				src: 'image.png',
+				width: 50,
+				widthUnit: '%'
+			});
 		});
 	});
 });
