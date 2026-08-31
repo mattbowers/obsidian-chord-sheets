@@ -61,11 +61,7 @@
 
 }
 
-/* Hide PDF++ toolbar */
-div.pdf-toolbar {
-  height: 0;
-  padding: 0;
-}
+/* PDF++ toolbar hiding moved to the stage-fullscreen plugin (styles.css). */
 
 /* Attempt to squeeze out space in PDF++ view */
 .pdf-viewer-container .pdfViewer .spread .page {
