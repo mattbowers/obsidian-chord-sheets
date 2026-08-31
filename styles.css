@@ -996,14 +996,15 @@ svg.enharmonic-toggle {
 }
 
 /* BPM flash indicator (beat duration is set inline via --bpm-flash-duration).
-   A solid red dot that lights up bright red on each beat and decays to dim -
+   A solid red dot that snaps to bright red on each beat (sharp leading edge)
+   then fades out along a decaying tail across the rest of the beat -
    it never fades to a dark/hollow centre. */
 @keyframes chord-sheet-bpm-flash {
 	0% {
 		opacity: 1;
 		box-shadow: 0 0 1em 0.08em #ff0000;
 	}
-	25%, 100% {
+	100% {
 		opacity: 0.1;
 		box-shadow: 0 0 0.17em #ff0000;
 	}
@@ -1018,7 +1019,9 @@ svg.enharmonic-toggle {
 	border-radius: 50%;
 	background-color: #ff0000;
 	box-shadow: 0 0 0.85em #ff0000;
-	animation: var(--bpm-flash-duration, 500ms) chord-sheet-bpm-flash linear infinite;
+	/* ease-out curve: rapid initial drop, then a long decaying tail.
+	   The animation restarts instantly each cycle, keeping the leading edge sharp. */
+	animation: var(--bpm-flash-duration, 500ms) chord-sheet-bpm-flash cubic-bezier(0.1, 0.7, 0.3, 1) infinite;
 }
 
 /* Header bar: song title on the left, frontmatter properties aligned right,
