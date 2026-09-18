@@ -1010,18 +1010,78 @@ svg.enharmonic-toggle {
 	}
 }
 
+/* Same fade-out tail shape as the outer (crochet) flash, scaled down so the
+   glow doesn't blow out past the small inner dot. One full cycle covers a
+   whole crochet beat and packs in both quaver flashes within it: black on
+   the downbeat (0%, coinciding with the crochet dot's own flash, so it reads
+   as a dot punched out of the red rather than blending into it) and red on
+   the off-beat "and" (50%, when the crochet dot is already mid-decay). The
+   near-duplicate percentages (49.9%/50%, 99.9%/100%) are what create the
+   instant colour snaps instead of a crossfade. */
+@keyframes chord-sheet-bpm-flash-inner {
+	0% {
+		opacity: 1;
+		background-color: #000000;
+		box-shadow: 0 0 0.4em 0.03em #000000;
+	}
+	49.9% {
+		opacity: 0.1;
+		background-color: #000000;
+		box-shadow: 0 0 0.07em #000000;
+	}
+	50% {
+		opacity: 1;
+		background-color: #ff0000;
+		box-shadow: 0 0 0.4em 0.03em #ff0000;
+	}
+	99.9% {
+		opacity: 0.1;
+		background-color: #ff0000;
+		box-shadow: 0 0 0.07em #ff0000;
+	}
+}
+
 .chord-sheet-bpm-flash-icon {
 	display: inline-block;
+	position: relative;
 	flex: 0 0 auto;
 	/* Size relative to the surrounding header/properties text so it fits the bar */
 	width: 0.85em;
 	height: 0.85em;
+}
+
+/* Crochet (quarter-note) beat. This dot's own opacity animates, so it must
+   NOT be an ancestor of the quaver dot below - an animated `opacity` creates
+   a compositing group that caps/multiplies the opacity of anything nested
+   inside it, which would crush the quaver dot's flash. Keep them as siblings
+   inside the static .chord-sheet-bpm-flash-icon wrapper instead. */
+.chord-sheet-bpm-flash-icon-crochet {
+	position: absolute;
+	inset: 0;
 	border-radius: 50%;
 	background-color: #ff0000;
 	box-shadow: 0 0 0.85em #ff0000;
 	/* ease-out curve: rapid initial drop, then a long decaying tail.
 	   The animation restarts instantly each cycle, keeping the leading edge sharp. */
 	animation: var(--bpm-flash-duration, 500ms) chord-sheet-bpm-flash cubic-bezier(0.1, 0.7, 0.3, 1) infinite;
+}
+
+/* Quaver (eighth-note) beat: a smaller dot centred over the crochet dot,
+   flashing on every crochet beat too, plus the off-beat "and" in between -
+   see chord-sheet-bpm-flash-inner for why it alternates black/red. Runs on
+   the same (crochet-length) duration as the outer dot so the two stay in
+   sync; both quaver flashes are baked into that one keyframe cycle. */
+.chord-sheet-bpm-flash-icon-inner {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	width: 40%;
+	height: 40%;
+	border-radius: 50%;
+	background-color: #000000;
+	box-shadow: 0 0 0.4em #000000;
+	animation: var(--bpm-flash-duration, 500ms) chord-sheet-bpm-flash-inner cubic-bezier(0.1, 0.7, 0.3, 1) infinite;
 }
 
 /* Header bar: song title on the left, frontmatter properties aligned right,

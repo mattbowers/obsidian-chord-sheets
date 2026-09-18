@@ -19,6 +19,7 @@ import {tokenizeLine} from "./sheet-parsing/tokenizeLine";
 import ChordSheetsPlugin from "./main";
 import {Instrument} from "./instruments/types";
 
+const QUAVER_FLASH_MAX_BPM = 100;
 
 function processDirectionOpening(value: string) {
 		switch (value) {
@@ -367,12 +368,35 @@ export class ChordBlockPostProcessorView extends MarkdownRenderChild {
 	}
 
 	private addBPMFlashIcon(containerEl: HTMLElement, bpm: number) {
+		// A static (non-animated) wrapper: the crochet and quaver dots are its
+		// children but siblings of each other, not nested inside one another.
+		// If the quaver dot were nested inside the crochet dot, the crochet
+		// dot's own opacity animation would cap/multiply the quaver dot's
+		// opacity, crushing its flash right when it's meant to pop brightest.
 		const icon = containerEl.createSpan({
 			cls: "chord-sheet-bpm-flash-icon",
 		});
 
-		const beatDurationMs = (60 / bpm) * 1000;
-		icon.style.setProperty("--bpm-flash-duration", `${beatDurationMs}ms`);
+		const crochetDurationMs = (60 / bpm) * 1000;
+
+		const crochetDot = icon.createSpan({
+			cls: "chord-sheet-bpm-flash-icon-crochet",
+		});
+		crochetDot.style.setProperty("--bpm-flash-duration", `${crochetDurationMs}ms`);
+
+		// Above this tempo the quaver flash is too fast to read as a distinct
+		// beat subdivision, so only show the crochet dot.
+		if (bpm >= QUAVER_FLASH_MAX_BPM) {
+			return;
+		}
+
+		// Both quaver flashes (black on the downbeat, red on the "and") are
+		// baked into a single keyframe cycle the length of a full crochet beat -
+		// see the CSS for why - so this runs on the same duration as the crochet dot.
+		const quaverDot = icon.createSpan({
+			cls: "chord-sheet-bpm-flash-icon-inner",
+		});
+		quaverDot.style.setProperty("--bpm-flash-duration", `${crochetDurationMs}ms`);
 	}
 
 	private attachChordDiagram(token: ChordToken, tokenEl: HTMLElement) {
